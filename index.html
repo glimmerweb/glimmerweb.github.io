@@ -59,11 +59,13 @@
       padding: 10px;
       margin-bottom: 10px;
       cursor: pointer;
+      text-align: center;
     }
 
     .selected-element {
       outline: 2px solid #007BFF;
       position: relative;
+
     }
 
     .resizable {
@@ -193,12 +195,36 @@
     .undo-button:hover {
       background-color: #0056b3;
     }
+            #pulse {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(0, 150, 136, 0.5); 
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease; 
+            box-shadow: 0 0 0 rgba(0, 150, 136, 0.5); 
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 rgba(0, 150, 136, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(0, 150, 136, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 0 rgba(0, 150, 136, 0.5);
+            }
+        }
   </style>
 </head>
 
 <body>
-
+    <div id="pulse"></div>
   <div id="main-container">
+    
     <div id="canvas"></div>
   </div>
   <div id="footer">
@@ -907,6 +933,7 @@
         isDragging = false;
       });
     }
+    
     const cssPopup = document.getElementById('css-popup');
     const popupHeader = document.getElementById('popup-header');
     makePopupDraggable(cssPopup, popupHeader);
