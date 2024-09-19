@@ -52,6 +52,8 @@
       background-color: #f1f1f1;
       padding: 20px;
       overflow-y: scroll;
+      border: 1px solid #ccc;
+      margin-right: 15px;
     }
 
     .draggable-element {
@@ -65,7 +67,6 @@
     .selected-element {
       outline: 2px solid #007BFF;
       position: relative;
-
     }
 
     .resizable {
@@ -112,34 +113,7 @@
       margin-bottom: 10px;
     }
 
-    #animation-modal,
-    #js-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      background-color: white;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: none;
-      z-index: 1000;
-    }
-
-    #js-modal {
-      width: 400px;
-    }
-
-    #modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      z-index: 999;
-    }
+    
 
     #css-popup {
       display: none;
@@ -195,48 +169,42 @@
     .undo-button:hover {
       background-color: #0056b3;
     }
-            #pulse {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: rgba(0, 150, 136, 0.5); 
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease; 
-            box-shadow: 0 0 0 rgba(0, 150, 136, 0.5); 
-        }
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 rgba(0, 150, 136, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 15px rgba(0, 150, 136, 0.3);
-            }
-            100% {
-                box-shadow: 0 0 0 rgba(0, 150, 136, 0.5);
-            }
-        }
+
+    #disappearingText {
+      opacity: 0;
+      transition: opacity 1.4s ease-in-out;
+      text-align: right;
+      font-weight: bold;
+      background-color: #f4f4f4;
+      font-size: 0.3em;
+    }
   </style>
 </head>
 
 <body>
-    <div id="pulse"></div>
   <div id="main-container">
-    
+
     <div id="canvas"></div>
+
   </div>
+  
   <div id="footer">
+
     <div id="sidebar">
       <h2>Elements</h2>
-      <div class="draggable-element" draggable="true" data-type="text">Text</div>
-      <div class="draggable-element" draggable="true" data-type="button">Button</div>
-      <div class="draggable-element" draggable="true" data-type="image">Image</div>
-      <div class="draggable-element" draggable="true" data-type="form">Form</div>
-      <div class="draggable-element" draggable="true" data-type="carousel">Carousel</div>
-      <div class="draggable-element" draggable="true" data-type="video">Video</div>
-      <div class="draggable-element" draggable="true" data-type="contact-form">Contact Form</div>
+<div class="draggable-element" draggable="true" data-type="text">Text</div>
+<div class="draggable-element" draggable="true" data-type="button">Button</div>
+<div class="draggable-element" draggable="true" data-type="image">Image</div>
+<div class="draggable-element" draggable="true" data-type="form">Form</div>
+<div class="draggable-element" draggable="true" data-type="video">Video</div>
+<div class="draggable-element" draggable="true" data-type="contact-form">Contact Form</div>
+<div class="draggable-element" draggable="true" data-type="input">Input Field</div>
+<div class="draggable-element" draggable="true" data-type="heading">Heading</div>
+<div class="draggable-element" draggable="true" data-type="paragraph">Paragraph</div>
+<div class="draggable-element" draggable="true" data-type="list">List</div>
+<div class="draggable-element" draggable="true" data-type="table">Table</div>
+<div class="draggable-element" draggable="true" data-type="icon">Icon</div>
+
 
       <div id="custom-controls" class="controls">
       </div>
@@ -258,39 +226,80 @@
       <div id="redo-button" class="button">⤷</div>
     </div>
   </div>
+  <div id="disappearingText"></div>
 
-  <div id="css-popup">
-    <div id="popup-header">CSS Editor</div>
+  <div id="css-popup" style="display: none; /* Ensure it's hidden by default */">
+  <div id="popup-header">CSS Editor</div>
+
+  <!-- Background Type Selection -->
+  <label for="bg-type">Background Type:</label>
+  <select id="bg-type">
+    <option value="solid">Solid Color</option>
+    <option value="gradient">Gradient</option>
+  </select>
+
+  <!-- Solid Background Color -->
+  <div id="solid-bg">
     <label for="bg-color">Background Color:</label>
     <input type="color" id="bg-color" placeholder="e.g., #3498db">
-    <label for="color">Text Color:</label>
-    <input type="color" id="color" placeholder="e.g., #ffffff">
-    <label for="font-size">Font Size:</label>
-    <select id="font-size">
-      <option value="">Select font size</option>
-      <option value="12px">12px</option>
-      <option value="14px">14px</option>
-      <option value="16px">16px</option>
-      <option value="18px">18px</option>
-      <option value="20px">20px</option>
-    </select>
-    <label for="margin">Margin:</label>
-    <input type="text" id="margin" placeholder="e.g., 10px">
-    <label for="padding">Padding:</label>
-    <input type="text" id="padding" placeholder="e.g., 10px">
-    <label for="border">Border:</label>
-    <input type="text" id="border" placeholder="e.g., 1px solid #2980b9">
-    <label for="width">Width:</label>
-    <input type="text" id="width" placeholder="e.g., 50px">
-    <label for="height">Height:</label>
-    <input type="text" id="height" placeholder="e.g., 50px">
-    <label for="custom-css">Written CSS:</label><br>
-    <textarea id="custom-css" rows="4" placeholder="Enter custom CSS here..."></textarea><br>
-    <button id="apply-css">Apply CSS</button>
-    or
-    <button id="apply-custom-css">Apply Written CSS</button>
-    <button id="close-popup">Close</button>
   </div>
+  
+  <!-- Gradient Background -->
+  <div id="gradient-bg" style="display: none;">
+    <label for="bg-gradient">Background Gradient:</label>
+    <input type="text" id="bg-gradient" placeholder="e.g., linear-gradient(to right, #ff7e5f, #feb47b)">
+  </div>
+
+  <!-- Text Color -->
+  <label for="color">Text Color:</label>
+  <input type="color" id="color" placeholder="e.g., #ffffff">
+
+  <!-- Font Size -->
+  <label for="font-size">Font Size:</label>
+  <select id="font-size">
+    <option value="">Select font size</option>
+    <option value="12px">12px</option>
+    <option value="14px">14px</option>
+    <option value="16px">16px</option>
+    <option value="18px">18px</option>
+    <option value="20px">20px</option>
+  </select>
+
+  <!-- Margin -->
+  <label for="margin">Margin:</label>
+  <input type="text" id="margin" placeholder="e.g., 10px">
+
+  <!-- Padding -->
+  <label for="padding">Padding:</label>
+  <input type="text" id="padding" placeholder="e.g., 10px">
+
+  <!-- Border -->
+  <label for="border">Border:</label>
+  <input type="text" id="border" placeholder="e.g., 1px solid #2980b9">
+
+  <!-- Width -->
+  <label for="width">Width:</label>
+  <input type="text" id="width" placeholder="e.g., 50px">
+
+  <!-- Height -->
+  <label for="height">Height:</label>
+  <input type="text" id="height" placeholder="e.g., 50px">
+
+  <!-- Z-Index -->
+  <label for="z-index">Z-Index:</label>
+  <input type="number" id="z-index" placeholder="e.g., 1">
+
+  <!-- Custom CSS -->
+  <label for="custom-css">Written CSS:</label><br>
+  <textarea id="custom-css" rows="4" placeholder="Enter custom CSS here..."></textarea><br>
+
+  <!-- Buttons -->
+  <button id="apply-css">Apply CSS</button>
+  or
+  <button id="apply-custom-css">Apply Written CSS</button>
+  <button id="close-popup">Close</button>
+</div>
+
 
   <script>
     let undoStack = [];
@@ -359,12 +368,53 @@
         <button type="submit">Send</button>
       `;
           break;
-      }
-      newElement.style.position = 'absolute';
-      newElement.classList.add('draggable');
-      newElement.classList.add('resizable');
-      return newElement;
-    }
+case 'input':
+      newElement = document.createElement('input');
+      newElement.type = 'text';
+      newElement.placeholder = 'Enter text here';
+      break;
+    case 'heading':
+      newElement = document.createElement('h2');
+      newElement.textContent = 'New Heading';
+      break;
+    case 'paragraph':
+      newElement = document.createElement('p');
+      newElement.textContent = 'This is a new paragraph. Double-click to edit.';
+      break;
+    case 'social-media':
+      newElement = document.createElement('div');
+      newElement.innerHTML = '<a href="#" class="fa fa-facebook"></a> <a href="#" class="fa fa-twitter"></a> <a href="#" class="fa fa-instagram"></a>';
+      newElement.setAttribute('data-platforms', 'facebook,twitter,instagram');
+      break;
+    case 'icon':
+      newElement = document.createElement('i');
+      newElement.className = 'fas fa-star';
+      break;
+    case 'divider':
+      newElement = document.createElement('hr');
+      break;
+    case 'table':
+      newElement = document.createElement('table');
+      newElement.innerHTML = '<tr><th>Header 1</th><th>Header 2</th></tr><tr><td>Row 1, Cell 1</td><td>Row 1, Cell 2</td></tr>';
+      newElement.setAttribute('data-rows', '2');
+      newElement.setAttribute('data-columns', '2');
+      break;
+    case 'list':
+      newElement = document.createElement('ul');
+      newElement.innerHTML = '<li>Item 1</li><li>Item 2</li><li>Item 3</li>';
+      break;
+    case 'table-of-contents':
+      newElement = document.createElement('div');
+      newElement.innerHTML = '<h3>Table of Contents</h3><ul><li><a href="#section1">Section 1</a></li><li><a href="#section2">Section 2</a></li></ul>';
+      newElement.setAttribute('data-depth', '1');
+      break;
+  }
+  
+  newElement.style.position = 'absolute';
+  newElement.classList.add('draggable');
+  newElement.classList.add('resizable');
+  return newElement;
+}
 
     function startDrag(event) {
       const target = event.target.closest('.draggable');
@@ -617,12 +667,130 @@
         <input type="number" id="contact-form-margin" value="${parseInt(getComputedStyle(selectedElement).margin)}">
     `;
           break;
+case 'input':
+      controlsDiv.innerHTML = `
+        <label for="input-type">Input Type</label>
+        <select id="input-type">
+          <option value="text" ${selectedElement.type === 'text' ? 'selected' : ''}>Text</option>
+          <option value="number" ${selectedElement.type === 'number' ? 'selected' : ''}>Number</option>
+          <option value="email" ${selectedElement.type === 'email' ? 'selected' : ''}>Email</option>
+          <option value="password" ${selectedElement.type === 'password' ? 'selected' : ''}>Password</option>
+        </select>
+        <label for="input-placeholder">Placeholder</label>
+        <input type="text" id="input-placeholder" value="${selectedElement.placeholder}">
+        <label for="input-required">Required</label>
+        <input type="checkbox" id="input-required" ${selectedElement.required ? 'checked' : ''}>
+      `;
+      break;
+    case 'h2':
+      controlsDiv.innerHTML = `
+        <label for="heading-text">Heading Text</label>
+        <input type="text" id="heading-text" value="${selectedElement.textContent}">
+        <label for="heading-size">Heading Size</label>
+        <select id="heading-size">
+          <option value="h1">H1</option>
+          <option value="h2" selected>H2</option>
+          <option value="h3">H3</option>
+          <option value="h4">H4</option>
+        </select>
+      `;
+      break;
+          case 'div':
+      if (selectedElement.querySelector('.fa')) {
+        // Social Media controls
+        const platforms = selectedElement.getAttribute('data-platforms').split(',');
+        controlsDiv.innerHTML = `
+          <h3>Social Media Platforms</h3>
+          <div id="platform-checkboxes">
+            ${['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'].map(platform => `
+              <label>
+                <input type="checkbox" id="${platform}-checkbox" ${platforms.includes(platform) ? 'checked' : ''}>
+                ${platform.charAt(0).toUpperCase() + platform.slice(1)}
+              </label>
+            `).join('')}
+          </div>
+        `;
+      } else if (selectedElement.querySelector('ul')) {
+        // Table of Contents controls
+        controlsDiv.innerHTML = `
+          <label for="toc-depth">Depth</label>
+          <input type="number" id="toc-depth" min="1" max="6" value="${selectedElement.getAttribute('data-depth')}">
+          <button id="update-toc">Update TOC</button>
+        `;
+      }
+      break;
+    case 'i':
+      // Icon controls
+      controlsDiv.innerHTML = `
+        <label for="icon-class">Icon Class</label>
+        <input type="text" id="icon-class" value="${selectedElement.className}">
+        <label for="icon-color">Icon Color</label>
+        <input type="color" id="icon-color" value="${getComputedStyle(selectedElement).color}">
+        <label for="icon-size">Icon Size</label>
+        <input type="range" id="icon-size" min="12" max="72" value="${parseInt(getComputedStyle(selectedElement).fontSize)}">
+      `;
+      break;
+    case 'hr':
+      // Divider controls
+      controlsDiv.innerHTML = `
+        <label for="divider-color">Color</label>
+        <input type="color" id="divider-color" value="${getComputedStyle(selectedElement).borderColor}">
+        <label for="divider-style">Style</label>
+        <select id="divider-style">
+          <option value="solid" ${getComputedStyle(selectedElement).borderStyle === 'solid' ? 'selected' : ''}>Solid</option>
+          <option value="dashed" ${getComputedStyle(selectedElement).borderStyle === 'dashed' ? 'selected' : ''}>Dashed</option>
+          <option value="dotted" ${getComputedStyle(selectedElement).borderStyle === 'dotted' ? 'selected' : ''}>Dotted</option>
+        </select>
+        <label for="divider-thickness">Thickness</label>
+        <input type="range" id="divider-thickness" min="1" max="10" value="${parseInt(getComputedStyle(selectedElement).borderWidth)}">
+      `;
+      break;
+    case 'table':
+      // Table controls
+      controlsDiv.innerHTML = `
+        <label for="table-rows">Rows</label>
+        <input type="number" id="table-rows" min="1" value="${selectedElement.getAttribute('data-rows')}">
+        <label for="table-columns">Columns</label>
+        <input type="number" id="table-columns" min="1" value="${selectedElement.getAttribute('data-columns')}">
+        <button id="update-table">Update Table</button>
+        <label for="table-border">Border</label>
+        <input type="checkbox" id="table-border" ${selectedElement.style.border ? 'checked' : ''}>
+        <label for="table-striped">Striped Rows</label>
+        <input type="checkbox" id="table-striped" ${selectedElement.classList.contains('striped') ? 'checked' : ''}>
+      `;
+      break;
+    case 'ul':
+    case 'ol':
+      // List controls
+      controlsDiv.innerHTML = `
+        <label for="list-type">List Type</label>
+        <select id="list-type">
+          <option value="ul" ${elementType === 'ul' ? 'selected' : ''}>Unordered</option>
+          <option value="ol" ${elementType === 'ol' ? 'selected' : ''}>Ordered</option>
+        </select>
+        <label for="list-style">List Style</label>
+        <select id="list-style">
+          <option value="disc" ${getComputedStyle(selectedElement).listStyleType === 'disc' ? 'selected' : ''}>Disc</option>
+          <option value="circle" ${getComputedStyle(selectedElement).listStyleType === 'circle' ? 'selected' : ''}>Circle</option>
+          <option value="square" ${getComputedStyle(selectedElement).listStyleType === 'square' ? 'selected' : ''}>Square</option>
+          <option value="decimal" ${getComputedStyle(selectedElement).listStyleType === 'decimal' ? 'selected' : ''}>Decimal</option>
+          <option value="lower-alpha" ${getComputedStyle(selectedElement).listStyleType === 'lower-alpha' ? 'selected' : ''}>Lower Alpha</option>
+          <option value="upper-alpha" ${getComputedStyle(selectedElement).listStyleType === 'upper-alpha' ? 'selected' : ''}>Upper Alpha</option>
+        </select>
+        <button id="add-list-item">Add Item</button>
+      `;
+      break;
+
       }
       document.querySelectorAll('#custom-controls input, #custom-controls select').forEach(input => {
         input.addEventListener('input', () => {
           updateElementProperty(input.id, input.value);
         });
       });
+      
+        document.getElementById('update-table')?.addEventListener('click', updateTable);
+  document.getElementById('update-toc')?.addEventListener('click', updateTableOfContents);
+  document.getElementById('add-list-item')?.addEventListener('click', addListItem);
     }
 
     function rgbToHex(rgb) {
@@ -662,46 +830,108 @@
         case 'image-alt':
           selectedElement.alt = value;
           break;
+          case 'input-type':
+      selectedElement.type = value;
+      break;
+    case 'input-placeholder':
+      selectedElement.placeholder = value;
+      break;
+    case 'input-required':
+      selectedElement.required = value;
+      break;
+    case 'heading-text':
+      selectedElement.textContent = value;
+      break;
+    case 'heading-size':
+      const newHeading = document.createElement(value);
+      newHeading.textContent = selectedElement.textContent;
+      newHeading.style.cssText = selectedElement.style.cssText;
+      selectedElement.parentNode.replaceChild(newHeading, selectedElement);
+      selectedElement = newHeading;
+      break;
+          case 'icon-class':
+      selectedElement.className = value;
+      break;
+    case 'icon-color':
+      selectedElement.style.backgroundColor = value;
+      break;
+    case 'icon-size':
+      selectedElement.style.fontSize = `${value}px`;
+      break;
+    case 'divider-color':
+      selectedElement.style.borderColor = value;
+      break;
+    case 'divider-style':
+      selectedElement.style.borderStyle = value;
+      break;
+    case 'divider-thickness':
+      selectedElement.style.borderWidth = `${value}px`;
+      break;
+    case 'table-border':
+      selectedElement.style.border = value ? '1px solid black' : 'none';
+      selectedElement.style.borderCollapse = value ? 'collapse' : 'separate';
+      break;
+    case 'table-striped':
+      selectedElement.classList.toggle('striped', value);
+      break;
+    case 'list-type':
+      const newList = document.createElement(value);
+      newList.innerHTML = selectedElement.innerHTML;
+      selectedElement.parentNode.replaceChild(newList, selectedElement);
+      selectedElement = newList;
+      break;
+    case 'list-style':
+      selectedElement.style.listStyleType = value;
+      break;
+    case 'toc-depth':
+      selectedElement.setAttribute('data-depth', value);
+      break;
       }
       updateCode();
     }
 
-    function updateCode() {
-      let htmlCode = '';
-      let cssCode = '';
-      // Collect CSS rules
-      document.querySelectorAll('.draggable-element').forEach(el => {
-        const style = getComputedStyle(el);
-        cssCode += `
-        .${el.className.replace(/\s+/g, '.')}.${el.getAttribute('data-type')} {
-            background-color: ${style.backgroundColor};
-            color: ${style.color};
-            font-size: ${style.fontSize};
-            margin: ${style.margin};
-            padding: ${style.padding};
-            border: ${style.border};
-            width: ${style.width};
-            height: ${style.height};
-            position: absolute;
-            left: ${el.style.left};
-            top: ${el.style.top};
-        }
-        `;
-      });
-      // Collect HTML
-      canvas.childNodes.forEach(el => {
-        if (el.nodeType === Node.ELEMENT_NODE) {
-          htmlCode += el.outerHTML + '\n';
-        }
-      });
-      // Update code preview with CSS and HTML
-      codePreview.textContent = `
-    <style>
-        ${cssCode}
-    </style>
-    ${htmlCode}
+function updateCode() {
+  let htmlCode = '';
+  let cssCode = '';
+  
+  // Collect CSS rules
+  document.querySelectorAll('.draggable-element').forEach(el => {
+    const style = getComputedStyle(el);
+    cssCode += `
+.${el.className.replace(/\s+/g, '.')}.${el.getAttribute('data-type')} {
+    ${style.backgroundImage && style.backgroundImage !== 'none' ? `background-image: ${style.backgroundImage};` : `background-color: ${style.backgroundColor};`}
+    color: ${style.color};
+    font-size: ${style.fontSize};
+    margin: ${style.margin};
+    padding: ${style.padding};
+    border: ${style.border};
+    width: ${style.width};
+    height: ${style.height};
+    z-index: ${style.zIndex};
+    position: absolute;
+    left: ${el.style.left};
+    top: ${el.style.top};
+}
     `;
+  });
+
+  // Collect HTML
+  canvas.childNodes.forEach(el => {
+    if (el.nodeType === Node.ELEMENT_NODE) {
+      htmlCode += el.outerHTML + '\n';
     }
+  });
+
+  // Update code preview with CSS and HTML
+  codePreview.textContent = `
+<style>
+    ${cssCode}
+</style>
+${htmlCode}
+    `;
+}
+
+
     document.querySelectorAll('.draggable-element').forEach(element => {
       element.addEventListener('click', function() {
         if (selectedElement) {
@@ -711,51 +941,91 @@
         selectedElement.classList.add('selected');
       });
     });
-    document.getElementById('open-popup').addEventListener('click', function() {
-      if (selectedElement) {
-        document.getElementById('css-popup').style.display = 'block';
-        const style = getComputedStyle(selectedElement);
-        document.getElementById('bg-color').value = style.backgroundColor;
-        document.getElementById('color').value = style.color;
-        document.getElementById('font-size').value = style.fontSize;
-        document.getElementById('margin').value = style.margin;
-        document.getElementById('padding').value = style.padding;
-        document.getElementById('border').value = style.border;
-        document.getElementById('width').value = style.width;
-        document.getElementById('height').value = style.height;
-        document.getElementById('custom-css').value = '';
-      } else {
-        alert('Please select an element first.');
-      }
-    });
-    document.getElementById('apply-css').addEventListener('click', function() {
-      if (selectedElement) {
-        const bgColor = document.getElementById('bg-color').value;
-        const color = document.getElementById('color').value;
-        const fontSize = document.getElementById('font-size').value;
-        const margin = document.getElementById('margin').value;
-        const padding = document.getElementById('padding').value;
-        const border = document.getElementById('border').value;
-        const width = document.getElementById('width').value;
-        const height = document.getElementById('height').value;
-        if (bgColor) selectedElement.style.backgroundColor = bgColor;
-        if (color) selectedElement.style.color = color;
-        if (fontSize) selectedElement.style.fontSize = fontSize;
-        if (margin) selectedElement.style.margin = margin;
-        if (padding) selectedElement.style.padding = padding;
-        if (border) selectedElement.style.border = border;
-        if (width) selectedElement.style.width = width;
-        if (height) selectedElement.style.height = height;
-        updateCode(); 
-      }
-    });
-    document.getElementById('apply-custom-css').addEventListener('click', function() {
-      if (selectedElement) {
-        const customCss = document.getElementById('custom-css').value;
-        selectedElement.style.cssText += `;${customCss}`;
-      }
-      updateCode();
-    });
+    
+    
+document.getElementById('open-popup').addEventListener('click', function() {
+  if (selectedElement) {
+    document.getElementById('css-popup').style.display = 'block';
+    const style = getComputedStyle(selectedElement);
+    
+    // Determine if the background is a gradient
+    if (style.backgroundImage && style.backgroundImage.includes('gradient')) {
+      document.getElementById('bg-type').value = 'gradient';
+      document.getElementById('gradient-bg').style.display = 'block';
+      document.getElementById('solid-bg').style.display = 'none';
+      // Assign the full gradient string without any replacement
+      document.getElementById('bg-gradient').value = style.backgroundImage;
+    } else {
+      document.getElementById('bg-type').value = 'solid';
+      document.getElementById('solid-bg').style.display = 'block';
+      document.getElementById('gradient-bg').style.display = 'none';
+      // Convert RGB to Hex for color input
+      document.getElementById('bg-color').value = rgbToHex(style.backgroundColor);
+    }
+
+    // Set other styles
+    document.getElementById('color').value = rgbToHex(style.color);
+    document.getElementById('font-size').value = style.fontSize;
+    document.getElementById('margin').value = style.margin;
+    document.getElementById('padding').value = style.padding;
+    document.getElementById('border').value = style.border;
+    document.getElementById('width').value = style.width;
+    document.getElementById('height').value = style.height;
+    document.getElementById('z-index').value = style.zIndex;
+    document.getElementById('custom-css').value = '';
+  } else {
+    alert('Please select an element first.');
+  }
+});
+
+
+
+document.getElementById('apply-css').addEventListener('click', function() {
+  if (selectedElement) {
+    const bgType = document.getElementById('bg-type').value;
+    const bgColor = document.getElementById('bg-color').value;
+    const bgGradient = document.getElementById('bg-gradient').value;
+    const color = document.getElementById('color').value;
+    const fontSize = document.getElementById('font-size').value;
+    const margin = document.getElementById('margin').value;
+    const padding = document.getElementById('padding').value;
+    const border = document.getElementById('border').value;
+    const width = document.getElementById('width').value;
+    const height = document.getElementById('height').value;
+    const zIndex = document.getElementById('z-index').value;
+
+    // Apply background
+    if (bgType === 'solid' && bgColor) {
+      selectedElement.style.backgroundColor = bgColor;
+      selectedElement.style.backgroundImage = 'none';
+    } else if (bgType === 'gradient' && bgGradient) {
+      selectedElement.style.backgroundImage = bgGradient;
+      selectedElement.style.backgroundColor = 'transparent';
+    }
+
+    // Apply other styles
+    if (color) selectedElement.style.color = color;
+    if (fontSize) selectedElement.style.fontSize = fontSize;
+    if (margin) selectedElement.style.margin = margin;
+    if (padding) selectedElement.style.padding = padding;
+    if (border) selectedElement.style.border = border;
+    if (width) selectedElement.style.width = width;
+    if (height) selectedElement.style.height = height;
+    if (zIndex) selectedElement.style.zIndex = zIndex;
+
+    updateCode();
+  }
+});
+
+
+document.getElementById('apply-custom-css').addEventListener('click', function() {
+  if (selectedElement) {
+    const customCss = document.getElementById('custom-css').value;
+    selectedElement.style.cssText += `;${customCss}`;
+    updateCode();
+  }
+});
+
     document.getElementById('close-popup').addEventListener('click', function() {
       document.getElementById('css-popup').style.display = 'none';
     });
@@ -785,7 +1055,7 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     });
-    updateCode(); 
+    updateCode();
     canvas.addEventListener('dragover', event => {
       event.preventDefault();
     });
@@ -823,6 +1093,8 @@
         selectedElement = null;
         updateControls();
         updateCode();
+      } else if ((event.key === 'Delete' || event.key === 'Backspace') && !event.shiftKey) {
+        showText('Press Shift+Delete to remove element', 1000);
       }
     });
 
@@ -846,14 +1118,16 @@
         isDragging = false;
       });
     }
+
     function captureState() {
       const htmlCode = canvas.innerHTML;
-      const cssCode = getCSSCode(); 
+      const cssCode = getCSSCode();
       return {
         htmlCode,
         cssCode
       };
     }
+
     function getCSSCode() {
       let cssCode = '';
       document.querySelectorAll('.draggable-element').forEach(el => {
@@ -876,25 +1150,29 @@
       });
       return cssCode;
     }
+
     function updateCanvasAndCode(state) {
       canvas.innerHTML = state.htmlCode;
       codePreview.textContent = `<style>${state.cssCode}</style>${state.htmlCode}`;
     }
+
     function handleStateChange() {
       undoStack.push(captureState());
-      redoStack = []; 
+      redoStack = [];
     }
+
     function undo() {
       if (undoStack.length > 0) {
         const state = undoStack.pop();
-        redoStack.push(captureState()); 
+        redoStack.push(captureState());
         updateCanvasAndCode(state);
       }
     }
+
     function redo() {
       if (redoStack.length > 0) {
         const state = redoStack.pop();
-        undoStack.push(captureState()); 
+        undoStack.push(captureState());
         updateCanvasAndCode(state);
       }
     }
@@ -913,6 +1191,7 @@
       handleStateChange();
       updateCode();
     });
+
     function makePopupDraggable(popup, header) {
       let isDragging = false;
       let offsetX, offsetY;
@@ -933,11 +1212,97 @@
         isDragging = false;
       });
     }
-    
     const cssPopup = document.getElementById('css-popup');
     const popupHeader = document.getElementById('popup-header');
     makePopupDraggable(cssPopup, popupHeader);
+
+    function showText(text, duration) {
+      const element = document.getElementById('disappearingText');
+      // Show the text
+      element.textContent = text;
+      element.style.opacity = '1';
+      // Hide the text after the specified duration
+      setTimeout(() => {
+        element.style.opacity = '0';
+        element.textContent = '';
+      }, duration);
+    }
+
+// New functions for table, table of contents, and list updates
+function updateTable() {
+  const rows = parseInt(document.getElementById('table-rows').value);
+  const columns = parseInt(document.getElementById('table-columns').value);
+  let tableHTML = '';
+  for (let i = 0; i < rows; i++) {
+    tableHTML += '<tr>';
+    for (let j = 0; j < columns; j++) {
+      tableHTML += i === 0 ? '<th>Header</th>' : '<td>Cell</td>';
+    }
+    tableHTML += '</tr>';
+  }
+  selectedElement.innerHTML = tableHTML;
+  selectedElement.setAttribute('data-rows', rows);
+  selectedElement.setAttribute('data-columns', columns);
+  updateCode();
+}
+
+function updateTableOfContents() {
+  const depth = parseInt(document.getElementById('toc-depth').value);
+  const headings = Array.from(document.querySelectorAll(`h1, h2, h3, h4, h5, h6`))
+    .filter(h => parseInt(h.tagName[1]) <= depth);
+  let tocHTML = '<h3>Table of Contents</h3><ul>';
+  headings.forEach((heading, index) => {
+    const id = `section${index + 1}`;
+    heading.id = id;
+    tocHTML += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+  });
+  tocHTML += '</ul>';
+  selectedElement.innerHTML = tocHTML;
+  updateCode();
+}
+
+function addListItem() {
+  const newItem = document.createElement('li');
+  newItem.textContent = 'New Item';
+  selectedElement.appendChild(newItem);
+  updateCode();
+}
+
+// Update social media platforms
+document.getElementById('platform-checkboxes')?.addEventListener('change', (e) => {
+  if (e.target.type === 'checkbox') {
+    const platforms = Array.from(document.querySelectorAll('#platform-checkboxes input:checked'))
+      .map(checkbox => checkbox.id.replace('-checkbox', ''));
+    selectedElement.innerHTML = platforms.map(platform => 
+      `<a href="#" class="fa fa-${platform}"></a>`
+    ).join(' ');
+    selectedElement.setAttribute('data-platforms', platforms.join(','));
+    updateCode();
+  }
+});
+
+// Background Type Toggle Listener
+document.getElementById('bg-type').addEventListener('change', function() {
+  const bgType = this.value;
+  if (bgType === 'solid') {
+    document.getElementById('solid-bg').style.display = 'block';
+    document.getElementById('gradient-bg').style.display = 'none';
+  } else if (bgType === 'gradient') {
+    document.getElementById('solid-bg').style.display = 'none';
+    document.getElementById('gradient-bg').style.display = 'block';
+  }
+});
+
+
+function rgbToHex(rgb) {
+  const result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+  return result ? 
+    "#" + 
+    ("0" + parseInt(result[1],10).toString(16)).slice(-2) + 
+    ("0" + parseInt(result[2],10).toString(16)).slice(-2) + 
+    ("0" + parseInt(result[3],10).toString(16)).slice(-2) 
+    : '#ffffff';
+}
+
   </script>
 </body>
-
-</html>
