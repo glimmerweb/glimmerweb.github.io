@@ -14,62 +14,110 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Center vertically on the page */
-            background-color: #f0f0f0; /* Light background for contrast */
+            height: 100vh; 
+            background-color: #f0f0f0; 
         }
         .gradient-square {
-            width: 100px; /* Initial size of the square */
-            height: 100px; /* Initial size of the square */
-            border-radius: 15px; /* Rounded edges */
-            background: linear-gradient(to bottom, #ff7e5f, #feb47b); /* Vertical gradient */
-            position: relative; /* For positioning the mouse cursor */
+            width: 100px; 
+            height: 100px; 
+            border-radius: 15px; 
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+            position: relative; 
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Hide overflow when animating */
-            transition: width 0.5s, height 0.5s; /* Smooth transition for size change */
+            overflow: hidden; 
+            transition: width 0.5s, height 0.5s; 
         }
         .mouse-cursor {
-            width: 40px; /* Increase the size of the cursor */
-            height: 40px; /* Increase the size of the cursor */
+            width: 40px; 
+            height: 40px; 
             position: relative;
             background: white;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Create a pointer shape */
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
         .mouse-cursor:before {
             content: '';
             position: absolute;
-            top: 10px; /* Adjusted for larger size */
-            left: 10px; /* Adjusted for larger size */
-            width: 20px; /* Increase the size of the inner circle */
-            height: 20px; /* Increase the size of the inner circle */
+            top: 10px; 
+            left: 10px; 
+            width: 20px; 
+            height: 20px; 
             background: white;
-            border-radius: 50%; /* Round cursor */
+            border-radius: 50%; 
         }
         .gradient-square:hover {
-            width: 300px; /* Expanded size on hover */
-            height: 100px; /* Expanded height on hover */
+            width: 300px; 
+            height: 100px; 
         }
         .text {
-            opacity: 0; /* Initially hidden */
+            opacity: 0; 
             position: absolute;
-            color: #05060f; /* Text color */
-            font-size: 20px; /* Font size */
+            color: #05060f; 
+            font-size: 20px;
             text-align: center;
-            transition: opacity 0.5s ease-in-out; /* Smooth transition for text visibility */
-            pointer-events: none; /* Ensure text doesn't interfere with mouse events */
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none; 
         }
         .gradient-square:hover .text {
             opacity: 1; 
         }
     </style>
 </head>
-<body>
+<body style="background-color: #f0f0f0">
+<div class="icon-container" 
+     style="width: 60px; height: 60px; background: linear-gradient(to bottom, #ff7e5f, #feb47b); border-radius: 10px; position: relative; margin: 20px; overflow: hidden; transition: all 0.5s ease-in-out; cursor: pointer;"
+     onclick="window.location.href='https://glimmerweb.github.io/docs';">
+
+    <div class="mouse-cursor" 
+         style="position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; background: white; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); transform: translate(-50%, -50%); transition: all 0.6s ease-in-out 0s;">
+    </div>
+
+    <div class="bars" 
+         style="position: absolute; top: 50%; left: 50%; width: 70%; height: 50%; display: flex; flex-direction: column; justify-content: space-between; transform: translate(-50%, -50%);">
+      <div class="bar1" 
+           style="height: 8px; background: white; border-radius: 3px; opacity: 0; transform: scaleX(0); transition: all 0.6s ease-in-out; width: 70%; transition-delay: 0.2s;">
+      </div>
+      <div class="bar2" 
+           style="height: 8px; background: white; border-radius: 3px; opacity: 0; transform: scaleX(0); transition: all 0.6s ease-in-out; width: 70%; transition-delay: 0.1s;">
+      </div>
+      <div class="bar3" 
+           style="height: 8px; background: white; border-radius: 3px; opacity: 0; transform: scaleX(0); transition: all 0.6s ease-in-out; width: 40%; transition-delay: 0.3s;">
+      </div>
+    </div>
+</div>
+
     <div class="container">
         <a href="https://glimmerweb.github.io/app/"  class="gradient-square">
             <div class="mouse-cursor"></div>
             <div class="text"></div>
         </a>
     </div>
+<script>
+    const iconContainer = document.querySelector('.icon-container');
+    const mouseCursor = document.querySelector('.mouse-cursor');
+    const bars = document.querySelectorAll('.bar1, .bar2, .bar3');
+    const text = document.querySelector('.text');
+
+    iconContainer.addEventListener('mouseover', () => {
+      mouseCursor.style.opacity = '0';
+      mouseCursor.style.clipPath = '0';
+      bars.forEach(bar => {
+        bar.style.opacity = '1';
+        bar.style.transform = 'scaleX(1)';
+      });
+      text.style.opacity = '1';
+    });
+
+    iconContainer.addEventListener('mouseout', () => {
+      mouseCursor.style.opacity = '1';
+      mouseCursor.style.clipPath = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+      bars.forEach(bar => {
+        bar.style.opacity = '0';
+        bar.style.transform = 'scaleX(0)';
+      });
+      text.style.opacity = '0';
+    });
+  </script>
 </body>
 </html>
