@@ -44,6 +44,7 @@
       background-color: #f4f4f4;
       padding: 20px;
       display: flex;
+      border: 2px solid #ff7e5f;
     }
 
     #sidebar {
@@ -57,12 +58,12 @@
       background-color: #f1f1f1;
       padding: 20px;
       overflow-y: scroll;
-      border: 1px solid #ccc;
+      border: 2px solid #ff7e5f;
       margin-right: 15px;
     }
 
     .draggable-element {
-      border: 1px solid #ccc;
+      border: 2px solid #ff7e5f;
       padding: 10px;
       margin-bottom: 10px;
       cursor: pointer;
@@ -70,7 +71,7 @@
     }
 
     .selected-element {
-      outline: 2px solid #007BFF;
+      outline: 2px solid #ff7e5f;
       position: relative;
     }
 
@@ -83,7 +84,7 @@
       position: absolute;
       width: 10px;
       height: 10px;
-      background: #007BFF;
+      background: #ff7e5f;
       border-radius: 50%;
       cursor: nwse-resize;
     }
@@ -92,6 +93,24 @@
       top: -5px;
       left: -5px;
     }
+
+.custom-button {
+    position: relative;
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #fff;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    border: 2px solid #ff7e5f;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    outline: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
 
     .resize-handle.tr {
       top: -5px;
@@ -147,7 +166,7 @@
     }
 
     #popup-header {
-      background-color: #3498db;
+      background-color: #ff7e5f;
       color: white;
       padding: 10px;
       cursor: move;
@@ -183,6 +202,19 @@
       background-color: #f4f4f4;
       font-size: 0.3em;
     }
+    
+    .custom-button:hover,
+.custom-button:focus {
+    background: linear-gradient(to right, #feb47b, #ff7e5f);
+    color: #05060f;
+    border-color: #feb47b;
+}
+
+.custom-button:active {
+    background: #ff7e5f;
+    color: #fff;
+    border-color: #ff7e5f;
+}
   </style>
 </head>
 
@@ -215,15 +247,15 @@
       </div>
 
       <h3>Additional Options</h3>
-      <button id="open-popup">Custom CSS</button>
-      <br>
-      <button id="add-js">Custom JS</button>
+      <button id="open-popup" class="custom-button">Custom CSS</button>
+      <br><br>
+      <button id="add-js" class="custom-button">Custom JS</button>
     </div>
 
     <div id="code-output">
       <h2>Code</h2>
       <pre id="code-preview"></pre>
-      <button id="download-code">Download Code</button>
+      <button id="download-code" class="custom-button">Download Code</button>
     </div>
 
     <div id="buttons-container">
