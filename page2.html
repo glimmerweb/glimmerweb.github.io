@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glimmer</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Center vertically on the page */
+            background-color: #f0f0f0; /* Light background for contrast */
+        }
+        .gradient-square {
+            width: 100px; /* Initial size of the square */
+            height: 100px; /* Initial size of the square */
+            border-radius: 15px; /* Rounded edges */
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b); /* Vertical gradient */
+            position: relative; /* For positioning the mouse cursor */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide overflow when animating */
+            transition: width 0.5s, height 0.5s; /* Smooth transition for size change */
+        }
+        .mouse-cursor {
+            width: 40px; /* Increase the size of the cursor */
+            height: 40px; /* Increase the size of the cursor */
+            position: relative;
+            background: white;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Create a pointer shape */
+        }
+        .mouse-cursor:before {
+            content: '';
+            position: absolute;
+            top: 10px; /* Adjusted for larger size */
+            left: 10px; /* Adjusted for larger size */
+            width: 20px; /* Increase the size of the inner circle */
+            height: 20px; /* Increase the size of the inner circle */
+            background: white;
+            border-radius: 50%; /* Round cursor */
+        }
+        .gradient-square:hover {
+            width: 300px; /* Expanded size on hover */
+            height: 100px; /* Expanded height on hover */
+        }
+        .text {
+            opacity: 0; /* Initially hidden */
+            position: absolute;
+            color: #05060f; /* Text color */
+            font-size: 20px; /* Font size */
+            text-align: center;
+            transition: opacity 0.5s ease-in-out; /* Smooth transition for text visibility */
+            pointer-events: none; /* Ensure text doesn't interfere with mouse events */
+        }
+        .gradient-square:hover .text {
+            opacity: 1; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://glimmerweb.github.io/app/"  class="gradient-square">
+            <div class="mouse-cursor"></div>
+            <div class="text"></div>
+        </a>
+    </div>
+</body>
+</html>
