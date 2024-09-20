@@ -44,22 +44,26 @@
     <div class="iframe-container">
         <iframe id="iframe1" src="page1.html"></iframe>
         <iframe id="iframe2" src="page2.html" style="display: none;"></iframe>
+        <iframe id="iframe3" src="page3.html" style="display: none;"></iframe>
+        <iframe id="iframe4" src="page4.html" style="display: none;"></iframe>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var iframe1 = document.getElementById('iframe1');
-            var iframe2 = document.getElementById('iframe2');
-            var randomChoice = Math.random(); // Get a random number between 0 and 1
+    document.addEventListener('DOMContentLoaded', function() {
+        var iframes = [
+            document.getElementById('iframe1'),
+            document.getElementById('iframe2'),
+            document.getElementById('iframe3'),
+            document.getElementById('iframe4')
+        ];
 
-            if (randomChoice < 0.5) {
-                iframe2.style.display = 'none';
-                iframe1.style.display = 'block';
-            } else {
-                iframe1.style.display = 'none';
-                iframe2.style.display = 'block';
-            }
+        iframes.forEach(function(iframe) {
+            iframe.style.display = 'none';
         });
-    </script>
+
+        var randomIndex = Math.floor(Math.random() * iframes.length);
+        iframes[randomIndex].style.display = 'block';
+    });
+</script>
 </body>
 </html>
