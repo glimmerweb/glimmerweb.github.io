@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glimmer - Discover the Future</title>
     <style>
+        /* General Styles */
         body, html {
             margin: 0;
             padding: 0;
@@ -92,15 +93,116 @@
                 background: radial-gradient(circle, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             }
         }
+
+        /* Docs Button Styles */
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+            border-radius: 10px;
+            position: fixed; /* Changed to fixed for top-left placement */
+            top: 20px; /* Distance from the top */
+            left: 20px; /* Distance from the left */
+            overflow: hidden;
+            transition: all 0.5s ease-in-out;
+            cursor: pointer;
+            z-index: 3; /* Ensures it stays above the background */
+        }
+
+        .mouse-cursor {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 15px;
+            height: 15px;
+            background: white;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease-in-out 0s;
+            opacity: 1;
+        }
+
+        .bars {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 70%;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform: translate(-50%, -50%);
+        }
+
+        .bars div {
+            height: 8px;
+            background: white;
+            border-radius: 3px;
+            opacity: 0;
+            transform: scaleX(0);
+            transition: all 0.6s ease-in-out;
+        }
+
+        .bar1 {
+            width: 70%;
+            transition-delay: 0.2s;
+        }
+
+        .bar2 {
+            width: 70%;
+            transition-delay: 0.1s;
+        }
+
+        .bar3 {
+            width: 40%;
+            transition-delay: 0.3s;
+        }
+
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
 </head>
 <body>
     <div class="background-animation"></div>
+    
+    <!-- Docs Button Integration (Moved outside of .content for top-left placement) -->
+    <div class="icon-container" onclick="window.location.href='https://glimmerweb.github.io/docs';">
+        <div class="mouse-cursor"></div>
+        <div class="bars">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+    </div>
+
     <div class="content">
         <h1 class="headline">Welcome to Glimmer</h1>
         <p class="description">Unleash your creativity with our innovative visual web development platform.</p>
         <button class="cta-button" onclick="window.location.href='https://glimmerweb.github.io/app';">Explore Now</button>
     </div>
+
+    <script>
+        // Select Elements
+        const iconContainer = document.querySelector('.icon-container');
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const bars = document.querySelectorAll('.bar1, .bar2, .bar3');
+
+        // Mouseover Event
+        iconContainer.addEventListener('mouseover', () => {
+            mouseCursor.style.opacity = '0';
+            bars.forEach(bar => {
+                bar.style.opacity = '1';
+                bar.style.transform = 'scaleX(1)';
+            });
+        });
+
+        // Mouseout Event
+        iconContainer.addEventListener('mouseout', () => {
+            mouseCursor.style.opacity = '1';
+            bars.forEach(bar => {
+                bar.style.opacity = '0';
+                bar.style.transform = 'scaleX(0)';
+            });
+        });
+    </script>
 </body>
 </html>
