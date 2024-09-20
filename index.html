@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+  
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -231,30 +236,25 @@
   <div id="css-popup" style="display: none; /* Ensure it's hidden by default */">
   <div id="popup-header">CSS Editor</div>
 
-  <!-- Background Type Selection -->
   <label for="bg-type">Background Type:</label>
   <select id="bg-type">
     <option value="solid">Solid Color</option>
     <option value="gradient">Gradient</option>
   </select>
 
-  <!-- Solid Background Color -->
   <div id="solid-bg">
     <label for="bg-color">Background Color:</label>
     <input type="color" id="bg-color" placeholder="e.g., #3498db">
   </div>
   
-  <!-- Gradient Background -->
   <div id="gradient-bg" style="display: none;">
     <label for="bg-gradient">Background Gradient:</label>
     <input type="text" id="bg-gradient" placeholder="e.g., linear-gradient(to right, #ff7e5f, #feb47b)">
   </div>
 
-  <!-- Text Color -->
   <label for="color">Text Color:</label>
   <input type="color" id="color" placeholder="e.g., #ffffff">
 
-  <!-- Font Size -->
   <label for="font-size">Font Size:</label>
   <select id="font-size">
     <option value="">Select font size</option>
@@ -265,35 +265,27 @@
     <option value="20px">20px</option>
   </select>
 
-  <!-- Margin -->
   <label for="margin">Margin:</label>
   <input type="text" id="margin" placeholder="e.g., 10px">
 
-  <!-- Padding -->
   <label for="padding">Padding:</label>
   <input type="text" id="padding" placeholder="e.g., 10px">
 
-  <!-- Border -->
   <label for="border">Border:</label>
   <input type="text" id="border" placeholder="e.g., 1px solid #2980b9">
 
-  <!-- Width -->
   <label for="width">Width:</label>
   <input type="text" id="width" placeholder="e.g., 50px">
 
-  <!-- Height -->
   <label for="height">Height:</label>
   <input type="text" id="height" placeholder="e.g., 50px">
 
-  <!-- Z-Index -->
   <label for="z-index">Z-Index:</label>
   <input type="number" id="z-index" placeholder="e.g., 1">
 
-  <!-- Custom CSS -->
   <label for="custom-css">Written CSS:</label><br>
   <textarea id="custom-css" rows="4" placeholder="Enter custom CSS here..."></textarea><br>
 
-  <!-- Buttons -->
   <button id="apply-css">Apply CSS</button>
   or
   <button id="apply-custom-css">Apply Written CSS</button>
@@ -304,6 +296,23 @@
   <script>
     let undoStack = [];
     let redoStack = [];
+    const MAX_STACK_SIZE = 100;
+
+function handleStateChange() {
+  const state = captureState();
+
+  if (undoStack.length >= MAX_STACK_SIZE) {
+    undoStack.shift(); 
+  }
+  undoStack.push(state);
+
+  redoStack = [];
+
+  console.log('State captured and pushed to undoStack:', state);
+  console.log('Current undoStack size:', undoStack.length);
+  console.log('redoStack cleared');
+}
+
     let selectedElement = null;
     const canvas = document.getElementById('canvas');
     const codePreview = document.getElementById('code-preview');
@@ -697,7 +706,6 @@ case 'input':
       break;
           case 'div':
       if (selectedElement.querySelector('.fa')) {
-        // Social Media controls
         const platforms = selectedElement.getAttribute('data-platforms').split(',');
         controlsDiv.innerHTML = `
           <h3>Social Media Platforms</h3>
@@ -711,7 +719,6 @@ case 'input':
           </div>
         `;
       } else if (selectedElement.querySelector('ul')) {
-        // Table of Contents controls
         controlsDiv.innerHTML = `
           <label for="toc-depth">Depth</label>
           <input type="number" id="toc-depth" min="1" max="6" value="${selectedElement.getAttribute('data-depth')}">
@@ -720,7 +727,6 @@ case 'input':
       }
       break;
     case 'i':
-      // Icon controls
       controlsDiv.innerHTML = `
         <label for="icon-class">Icon Class</label>
         <input type="text" id="icon-class" value="${selectedElement.className}">
@@ -731,7 +737,6 @@ case 'input':
       `;
       break;
     case 'hr':
-      // Divider controls
       controlsDiv.innerHTML = `
         <label for="divider-color">Color</label>
         <input type="color" id="divider-color" value="${getComputedStyle(selectedElement).borderColor}">
@@ -746,13 +751,12 @@ case 'input':
       `;
       break;
     case 'table':
-      // Table controls
       controlsDiv.innerHTML = `
         <label for="table-rows">Rows</label>
         <input type="number" id="table-rows" min="1" value="${selectedElement.getAttribute('data-rows')}">
         <label for="table-columns">Columns</label>
         <input type="number" id="table-columns" min="1" value="${selectedElement.getAttribute('data-columns')}">
-        <button id="update-table">Update Table</button>
+        <button id="update-table">Update Table</button><br>
         <label for="table-border">Border</label>
         <input type="checkbox" id="table-border" ${selectedElement.style.border ? 'checked' : ''}>
         <label for="table-striped">Striped Rows</label>
@@ -894,7 +898,6 @@ function updateCode() {
   let htmlCode = '';
   let cssCode = '';
   
-  // Collect CSS rules
   document.querySelectorAll('.draggable-element').forEach(el => {
     const style = getComputedStyle(el);
     cssCode += `
@@ -915,14 +918,12 @@ function updateCode() {
     `;
   });
 
-  // Collect HTML
   canvas.childNodes.forEach(el => {
     if (el.nodeType === Node.ELEMENT_NODE) {
       htmlCode += el.outerHTML + '\n';
     }
   });
 
-  // Update code preview with CSS and HTML
   codePreview.textContent = `
 <style>
     ${cssCode}
@@ -948,22 +949,20 @@ document.getElementById('open-popup').addEventListener('click', function() {
     document.getElementById('css-popup').style.display = 'block';
     const style = getComputedStyle(selectedElement);
     
-    // Determine if the background is a gradient
     if (style.backgroundImage && style.backgroundImage.includes('gradient')) {
       document.getElementById('bg-type').value = 'gradient';
       document.getElementById('gradient-bg').style.display = 'block';
       document.getElementById('solid-bg').style.display = 'none';
-      // Assign the full gradient string without any replacement
+
       document.getElementById('bg-gradient').value = style.backgroundImage;
     } else {
       document.getElementById('bg-type').value = 'solid';
       document.getElementById('solid-bg').style.display = 'block';
       document.getElementById('gradient-bg').style.display = 'none';
-      // Convert RGB to Hex for color input
+
       document.getElementById('bg-color').value = rgbToHex(style.backgroundColor);
     }
 
-    // Set other styles
     document.getElementById('color').value = rgbToHex(style.color);
     document.getElementById('font-size').value = style.fontSize;
     document.getElementById('margin').value = style.margin;
@@ -994,7 +993,6 @@ document.getElementById('apply-css').addEventListener('click', function() {
     const height = document.getElementById('height').value;
     const zIndex = document.getElementById('z-index').value;
 
-    // Apply background
     if (bgType === 'solid' && bgColor) {
       selectedElement.style.backgroundColor = bgColor;
       selectedElement.style.backgroundImage = 'none';
@@ -1003,7 +1001,6 @@ document.getElementById('apply-css').addEventListener('click', function() {
       selectedElement.style.backgroundColor = 'transparent';
     }
 
-    // Apply other styles
     if (color) selectedElement.style.color = color;
     if (fontSize) selectedElement.style.fontSize = fontSize;
     if (margin) selectedElement.style.margin = margin;
@@ -1059,18 +1056,26 @@ document.getElementById('apply-custom-css').addEventListener('click', function()
     canvas.addEventListener('dragover', event => {
       event.preventDefault();
     });
-    canvas.addEventListener('drop', event => {
-      event.preventDefault();
-      const type = event.dataTransfer.getData('type');
-      const newElement = createElement(type);
-      const rect = canvas.getBoundingClientRect();
-      newElement.style.left = `${snapToGrid(event.clientX - rect.left)}px`;
-      newElement.style.top = `${snapToGrid(event.clientY - rect.top)}px`;
-      canvas.appendChild(newElement);
-      addResizeHandles(newElement);
-      newElement.addEventListener('mousedown', startDrag);
-      updateCode();
-    });
+canvas.addEventListener('drop', event => {
+  event.preventDefault();
+
+  handleStateChange();
+
+  const type = event.dataTransfer.getData('type');
+  const newElement = createElement(type);
+  const rect = canvas.getBoundingClientRect();
+  newElement.style.left = `${snapToGrid(event.clientX - rect.left)}px`; 
+  newElement.style.top = `${snapToGrid(event.clientY - rect.top)}px`;
+  canvas.appendChild(newElement);
+  addResizeHandles(newElement);
+  newElement.addEventListener('mousedown', startDrag); 
+  makeDraggable(newElement);
+
+  updateCode();
+
+  console.log('Element dropped and state captured');
+});
+
     canvas.addEventListener('mousedown', event => {
       const target = event.target.closest('.draggable');
       if (target) {
@@ -1082,51 +1087,57 @@ document.getElementById('apply-custom-css').addEventListener('click', function()
         event.dataTransfer.setData('type', element.getAttribute('data-type'));
       });
     });
-    document.addEventListener('keydown', function(event) {
-      if ((event.key === 'Delete' || event.key === 'Backspace') && event.shiftKey && selectedElement) {
-        event.preventDefault();
-        try {
-          canvas.removeChild(selectedElement);
-        } catch (error) {
-          console.error('Error removing element:', error);
-        }
-        selectedElement = null;
-        updateControls();
-        updateCode();
-      } else if ((event.key === 'Delete' || event.key === 'Backspace') && !event.shiftKey) {
-        showText('Press Shift+Delete to remove element', 1000);
-      }
-    });
 
-    function makeDraggable(element) {
-      let isDragging = false;
-      let offsetX, offsetY;
-      element.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        offsetX = e.clientX - element.getBoundingClientRect().left;
-        offsetY = e.clientY - element.getBoundingClientRect().top;
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          const x = e.clientX - offsetX;
-          const y = e.clientY - offsetY;
-          element.style.left = `${x}px`;
-          element.style.top = `${y}px`;
-        }
-      });
-      window.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
+document.addEventListener('keydown', function(event) {
+  if ((event.key === 'Delete' || event.key === 'Backspace') && event.shiftKey && selectedElement) { 
+    event.preventDefault();
+    try {
+      canvas.removeChild(selectedElement);
+      console.log('Element removed:', selectedElement);
+    } catch (error) {
+      console.error('Error removing element:', error);
     }
+    selectedElement = null; 
+    updateControls();
+    handleStateChange();
+    updateCode();
+  } else if ((event.key === 'Delete' || event.key === 'Backspace') && !event.shiftKey) {
+    showText('Press Shift+Delete to remove element', 1000);
+  }
+});
 
-    function captureState() {
-      const htmlCode = canvas.innerHTML;
-      const cssCode = getCSSCode();
-      return {
-        htmlCode,
-        cssCode
-      };
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  element.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - element.getBoundingClientRect().left;
+    offsetY = e.clientY - element.getBoundingClientRect().top;
+    handleStateChange(); 
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const rect = canvas.getBoundingClientRect();
+      const x = snapToGrid(e.clientX - rect.left - offsetX); 
+      const y = snapToGrid(e.clientY - rect.top - offsetY);
+      element.style.left = `${x}px`;
+      element.style.top = `${y}px`;
     }
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      handleStateChange();
+      updateCode();
+      console.log('Element dragged and state captured');
+    }
+  });
+}
+
 
     function getCSSCode() {
       let cssCode = '';
@@ -1155,11 +1166,12 @@ document.getElementById('apply-custom-css').addEventListener('click', function()
       canvas.innerHTML = state.htmlCode;
       codePreview.textContent = `<style>${state.cssCode}</style>${state.htmlCode}`;
     }
-
-    function handleStateChange() {
-      undoStack.push(captureState());
-      redoStack = [];
+    function captureState() {
+      const htmlCode = canvas.innerHTML;
+      const cssCode = getCSSCode();
+      return { htmlCode, cssCode };
     }
+
 
     function undo() {
       if (undoStack.length > 0) {
@@ -1176,7 +1188,6 @@ document.getElementById('apply-custom-css').addEventListener('click', function()
         updateCanvasAndCode(state);
       }
     }
-    // Event listeners
     document.getElementById('undo-button').addEventListener('click', undo);
     document.getElementById('redo-button').addEventListener('click', redo);
     canvas.addEventListener('drop', () => {
@@ -1218,17 +1229,14 @@ document.getElementById('apply-custom-css').addEventListener('click', function()
 
     function showText(text, duration) {
       const element = document.getElementById('disappearingText');
-      // Show the text
       element.textContent = text;
       element.style.opacity = '1';
-      // Hide the text after the specified duration
       setTimeout(() => {
         element.style.opacity = '0';
         element.textContent = '';
       }, duration);
     }
 
-// New functions for table, table of contents, and list updates
 function updateTable() {
   const rows = parseInt(document.getElementById('table-rows').value);
   const columns = parseInt(document.getElementById('table-columns').value);
@@ -1268,7 +1276,6 @@ function addListItem() {
   updateCode();
 }
 
-// Update social media platforms
 document.getElementById('platform-checkboxes')?.addEventListener('change', (e) => {
   if (e.target.type === 'checkbox') {
     const platforms = Array.from(document.querySelectorAll('#platform-checkboxes input:checked'))
@@ -1281,7 +1288,6 @@ document.getElementById('platform-checkboxes')?.addEventListener('change', (e) =
   }
 });
 
-// Background Type Toggle Listener
 document.getElementById('bg-type').addEventListener('change', function() {
   const bgType = this.value;
   if (bgType === 'solid') {
@@ -1303,6 +1309,5 @@ function rgbToHex(rgb) {
     ("0" + parseInt(result[3],10).toString(16)).slice(-2) 
     : '#ffffff';
 }
-
   </script>
 </body>
