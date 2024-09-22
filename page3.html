@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glimmer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            margin: 0;
+        }
+        
+        #animated-text {
+            font-size: 3em;
+            color: #ff7e5f; /* Opposite is #0081a0 */
+            letter-spacing: 0.1em;
+            display: flex;
+            text-decoration: none; 
+        }
+
+        .letter {
+            display: inline-block;
+            animation: fontShift 2.5s ease-in-out infinite;
+            animation-play-state: running; 
+            cursor: pointer; 
+        }
+
+        #animated-text:hover .letter {
+            animation-play-state: paused; 
+        }
+
+        @keyframes fontShift {
+            0%, 100% { font-family: 'Arial', sans-serif; }
+            10% { font-family: 'Courier New', monospace; }
+            20% { font-family: 'Georgia', serif; }
+            30% { font-family: 'Comic Sans MS', cursive; }
+            40% { font-family: 'Impact', sans-serif; }
+            50% { font-family: 'Times New Roman', serif; }
+            60% { font-family: 'Verdana', sans-serif; }
+            70% { font-family: 'Lucida Console', monospace; }
+            80% { font-family: 'Brush Script MT', cursive; }
+            90% { font-family: 'Garamond', serif; }
+        }
+    </style>
+</head>
+<body>
+
+    <a id="animated-text" href="https://glimmerweb.github.io/app" target="_blank"></a>
+
+    <script>
+        const word = "Glimmer";
+        const textContainer = document.getElementById('animated-text');
+
+        word.split('').forEach(letter => {
+            const span = document.createElement('span');
+            span.textContent = letter;
+            span.classList.add('letter');
+            textContainer.appendChild(span);
+        });
+
+        function getRandomOffset() {
+            return Math.random() * 0.2;
+        }
+        document.querySelectorAll('.letter').forEach((letter, index) => {
+            const baseDelay = index * 0.25; 
+            const randomOffset = getRandomOffset();
+            const delay = (baseDelay + randomOffset) + 's'; 
+            letter.style.animationDelay = delay;
+        });
+    </script>
+</body>
+</html>
