@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced HTML Canvas Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="controls">
+        <label for="inputType">Select Input Type:</label>
+        <select id="inputType">
+            <option value="upload">Upload HTML File</option>
+            <option value="paste-embedded">Paste HTML with Embedded CSS and JS</option>
+            <option value="paste-separate">Paste HTML, CSS, and JS Separately</option>
+        </select>
+    </div>
+    
+    <section class="controls">
 
+        <input type="file" id="fileInput" accept=".html" style="display: none;">
+    </section>
+    
+    <div id="inputSection">
+        <!-- Dynamic input fields will be injected here -->
+    </div>
+    
+    <div class="controls">
+        <button id="renderBtn" class="btn">Render</button>
+        <button id="exportBtn" class="btn">Export HTML</button>
+        <button id="undoBtn" class="btn">Undo</button>
+        <button id="redoBtn" class="btn">Redo</button>
+        <button id="saveBtn" class="btn">Save Layout</button>
+        <button id="loadBtn" class="btn">Load Layout</button>
+    </div>
+    
+    <div id="mainContainer">
+        <div id="canvas" contenteditable="false">
+            <!-- Uploaded or pasted HTML will be rendered here -->
+        </div>
+        <div id="stylePanel">
+            <h2>Style Editor</h2>
+            <div id="styleFields">
+                <label for="elementId">Element ID:</label>
+                <input type="text" id="elementId" readonly>
+                
+                <label for="width">Width (px):</label>
+                <input type="number" id="width">
+                
+                <label for="height">Height (px):</label>
+                <input type="number" id="height">
+                
+                <label for="backgroundColor">Background Color:</label>
+                <input type="color" id="backgroundColor">
+                
+                <label for="fontSize">Font Size (px):</label>
+                <input type="number" id="fontSize">
+                
+                <label for="color">Text Color:</label>
+                <input type="color" id="color">
+                
+                <label for="zIndex">Z-Index:</label>
+                <input type="number" id="zIndex">
+                <br>
+                <button id="applyStyleBtn" class="btn">Apply Styles</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exported HTML will be displayed here -->
+    <textarea id="exportArea" readonly placeholder="Exported HTML will appear here..."></textarea>
+
+    <script src="script.js"></script>
+</body>
+</html>
