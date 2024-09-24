@@ -1165,8 +1165,6 @@ document.addEventListener("DOMContentLoaded", () => {
     URL.revokeObjectURL(url);
   }
 
-  exportButton.addEventListener("click", exportCode);
-
   applyChangesButton.addEventListener("click", () => {
     hideCustomizationMenu();
   });
@@ -1187,6 +1185,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else if (currentElement && e.key === "f") {
       toggleFixedState(currentElement);
+    } if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault(); 
+        exportCode(); 
     }
   });
 
