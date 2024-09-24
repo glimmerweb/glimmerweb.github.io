@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glimmer</title>
     <style>
-        /* General Styles */
         body, html {
             margin: 0;
             padding: 0;
@@ -94,19 +93,18 @@
             }
         }
 
-        /* Docs Button Styles */
         .icon-container {
             width: 60px;
             height: 60px;
             background: linear-gradient(to bottom, #ff7e5f, #feb47b);
             border-radius: 10px;
-            position: fixed; /* Changed to fixed for top-left placement */
-            top: 20px; /* Distance from the top */
-            left: 20px; /* Distance from the left */
+            position: fixed; 
+            top: 20px; 
+            left: 20px;
             overflow: hidden;
             transition: all 0.5s ease-in-out;
             cursor: pointer;
-            z-index: 3; /* Ensures it stays above the background */
+            z-index: 3; 
         }
 
         .mouse-cursor {
@@ -171,12 +169,10 @@
     </div>
 
     <script>
-        // Select Elements
         const iconContainer = document.querySelector('.icon-container');
         const mouseCursor = document.querySelector('.mouse-cursor');
         const bars = document.querySelectorAll('.bar1, .bar2, .bar3');
 
-        // Mouseover Event
         iconContainer.addEventListener('mouseover', () => {
             mouseCursor.style.opacity = '0';
             bars.forEach(bar => {
@@ -185,7 +181,6 @@
             });
         });
 
-        // Mouseout Event
         iconContainer.addEventListener('mouseout', () => {
             mouseCursor.style.opacity = '1';
             bars.forEach(bar => {
