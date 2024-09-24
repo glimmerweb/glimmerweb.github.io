@@ -1,1 +1,219 @@
+body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
 
+    .container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    #elementOptions {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .sidebar {
+      position: relative;
+      width: 200px;
+      height: 100vh;
+      background-color: #f4f4f4;
+      padding: 10px;
+      z-index: 1000;
+    }
+
+    .sidebar-bottom {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+    }
+
+    #exportCode {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #exportCode:hover {
+      background-color: #0056b3;
+    }
+
+    .element {
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #e1e1e1;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .canvas {
+      flex: 1;
+      position: relative;
+      background: #fff;
+      border: 1px solid #ddd;
+      overflow: hidden;
+      background-image: linear-gradient(90deg, #f0f0f0 1px, transparent 1px), linear-gradient(#f0f0f0 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .customization-menu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+
+    .customization-options {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .customization-options label {
+      margin: 5px 0 2px;
+    }
+
+    .customization-options input,
+    .customization-options textarea {
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .resize-handle {
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .resize-handle.top-left {
+      top: -5px;
+      left: -5px;
+      cursor: nw-resize;
+    }
+
+    .resize-handle.top-right {
+      top: -5px;
+      right: -5px;
+      cursor: ne-resize;
+    }
+
+    .resize-handle.bottom-left {
+      bottom: -5px;
+      left: -5px;
+      cursor: sw-resize;
+    }
+
+    .resize-handle.bottom-right {
+      bottom: -5px;
+      right: -5px;
+      cursor: se-resize;
+    }
+
+    #exportCode {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    .no-drag .draggable-element {
+      pointer-events: none;
+    }
+
+    .selected-element {
+      outline: 2px solid black;
+      position: relative;
+    }
+
+    #customizationMenu {
+      margin-top: 20px;
+      background: #f4f4f4;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .customization-menu-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .customization-menu-content label {
+      margin: 5px 0;
+    }
+
+    .customization-menu-content input,
+    .customization-menu-content textarea {
+      margin-bottom: 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .customization-menu-content button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .customization-menu-content button:hover {
+      background: #0056b3;
+    }
+
+    .fixed-element {
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .fixed-element::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: linear-gradient(to right, black 50%, transparent 0),
+        linear-gradient(to bottom, black 50%, transparent 0),
+        linear-gradient(to right, black 50%, transparent 0),
+        linear-gradient(to bottom, black 50%, transparent 0);
+      background-size: 8px 2px, 2px 8px, 8px 2px, 2px 8px;
+      background-position: 0 0, 0 100%, 0 100%, 100% 0;
+      background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+      animation: moveBorder 20s infinite linear;
+    }
+
+    @keyframes moveBorder {
+      100% {
+        background-position: 400px 0, 0 800px, 400px 100%, 1200px 0;
+      }
+    }
