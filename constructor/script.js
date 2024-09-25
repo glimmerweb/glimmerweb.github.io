@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const applyChangesButton = document.createElement("button");
   const exportButton = document.getElementById("exportCode");
 
-  applyChangesButton.innerText = "Apply Changes";
+  applyChangesButton.innerText = "Close";
   customizationMenu.appendChild(applyChangesButton);
 
   const GRID_SIZE = 20;
@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
         newElement.contentEditable = true;
         newElement.innerText = "Text";
         break;
+      case "colored-square":
+        newElement = document.createElement("div");
+        newElement.className = "draggable-element colored-square-element";
+        newElement.style.width = "100px";
+        newElement.style.height = "100px";
+        newElement.style.backgroundColor = "#ff7e5f";
+        break;
       case "button":
         newElement = document.createElement("button");
         newElement.className = "draggable-element button-element";
@@ -57,13 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         newElement.controls = true;
         newElement.style.width = "300px";
         newElement.style.height = "200px";
-        break;
-      case "colored-square":
-        newElement = document.createElement("div");
-        newElement.className = "draggable-element colored-square-element";
-        newElement.style.width = "100px";
-        newElement.style.height = "100px";
-        newElement.style.backgroundColor = "#ff7e5f";
         break;
       case "audio":
         newElement = document.createElement("audio");
@@ -359,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function hideCustomizationMenu() {
     if (currentElement) {
       currentElement.classList.remove("selected-element");
-      hideResizeHandles(currentElement);
+      hideAllResizeHandles(currentElement);
     }
     customizationMenu.style.display = "none";
     sidebar.classList.remove("no-drag");
@@ -376,6 +376,382 @@ document.addEventListener("DOMContentLoaded", () => {
     customizationMenu.appendChild(applyChangesButton);
 
     const styles = getComputedStyle(element);
+
+    if (element.classList.contains("slider")) {
+      customizationMenu.insertAdjacentHTML(
+        "beforeend",
+        `
+      <div class="menu-section">
+        <label for="minValue">Minimum Value:</label>
+        <input type="number" id="minValue" value="${
+          parseInt(element.min, 10) || 0
+        }">
+      </div>
+      
+      <div class="menu-section">
+        <label for="maxValue">Maximum Value:</label>
+        <input type="number" id="maxValue" value="${
+          parseInt(element.max, 10) || 100
+        }">
+      </div>
+      
+      <div class="menu-section">
+        <label for="step">Step Size:</label>
+        <input type="number" id="step" value="${
+          parseInt(element.step, 10) || 1
+        }">
+      </div>
+      
+      <div class="menu-section">
+        <label for="value">Current Value:</label>
+        <input type="number" id="value" value="${element.value || 50}">
+      </div>
+      
+      <div class="menu-section">
+        <label for="orientation">Orientation:</label>
+        <select id="orientation">
+          <option value="horizontal" ${
+            element.orientation === "horizontal" ? "selected" : ""
+          }>Horizontal</option>
+          <option value="vertical" ${
+            element.orientation === "vertical" ? "selected" : ""
+          }>Vertical</option>
+        </select>
+      </div>
+    `
+      );
+
+      document.getElementById("minValue").addEventListener("input", (e) => {
+        element.min = e.target.value;
+      });
+
+      document.getElementById("maxValue").addEventListener("input", (e) => {
+        element.max = e.target.value;
+      });
+
+      document.getElementById("step").addEventListener("input", (e) => {
+        element.step = e.target.value;
+      });
+
+      document.getElementById("value").addEventListener("input", (e) => {
+        element.value = e.target.value;
+      });
+
+      document.getElementById("orientation").addEventListener("change", (e) => {
+        element.orientation = e.target.value;
+      });
+    }
+
+    if (element.classList.contains("colored-square-element")) {
+      customizationMenu.insertAdjacentHTML(
+        "beforeend",
+        `
+    <div class="menu-section">
+      <label for="background-type">Background Type:</label>
+      <select id="background-type">
+        <option value="solid" ${
+          element.style.backgroundImage ? "" : "selected"
+        }>Solid</option>
+        <option value="linear-gradient" ${
+          element.style.backgroundImage.includes("linear-gradient")
+            ? "selected"
+            : ""
+        }>Linear Gradient</option>
+        <option value="radial-gradient" ${
+          element.style.backgroundImage.includes("radial-gradient")
+            ? "selected"
+            : ""
+        }>Radial Gradient</option>
+      </select>
+    </div>
+
+    <div id="solid-color-section" class="menu-section" ${
+      element.style.backgroundImage ? 'style="display:none;"' : ""
+    }>
+      <label for="background-color">Background Color:</label>
+      <input type="color" id="background-color" value="${
+        element.style.backgroundColor || "#ff7e5f"
+      }">
+    </div>
+
+    <div id="gradient-section" class="menu-section" ${
+      element.style.backgroundImage ? "" : 'style="display:none;"'
+    }>
+      <div class="menu-section">
+        <label for="gradient-color1">Gradient Color 1:</label>
+        <input type="color" id="gradient-color1" value="${
+          element.gradientColor1 || "#ff7e5f"
+        }">
+      </div>
+      <div class="menu-section">
+        <label for="gradient-color2">Gradient Color 2:</label>
+        <input type="color" id="gradient-color2" value="${
+          element.gradientColor2 || "#feb47b"
+        }">
+      </div>
+
+      <div id="linear-gradient-options" class="menu-section" ${
+        element.style.backgroundImage.includes("linear-gradient")
+          ? ""
+          : 'style="display:none;"'
+      }>
+        <label for="gradient-angle">Gradient Angle (degrees):</label>
+        <input type="number" id="gradient-angle" value="${
+          element.gradientAngle || 45
+        }">
+      </div>
+
+      <div id="gradient-position-section" class="menu-section" ${
+        element.style.backgroundImage.includes("linear-gradient") &&
+        !element.style.backgroundImage.includes("radial-gradient")
+          ? ""
+          : 'style="display:none;"'
+      }>
+        <div class="menu-section">
+          <label for="color1-position">Color 1 Position (%):</label>
+          <input type="number" id="color1-position" value="${
+            element.gradientPosition1 || 0
+          }">
+        </div>
+        <div class="menu-section">
+          <label for="color2-position">Color 2 Position (%):</label>
+          <input type="number" id="color2-position" value="${
+            element.gradientPosition2 || 100
+          }">
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <label for="width">Width (px):</label>
+      <input type="number" id="width" value="${
+        parseInt(element.style.width, 10) || 100
+      }">
+    </div>
+
+    <div class="menu-section">
+      <label for="height">Height (px):</label>
+      <input type="number" id="height" value="${
+        parseInt(element.style.height, 10) || 100
+      }">
+    </div>
+
+    <div class="menu-section">
+      <label for="opacity">Opacity:</label>
+      <input type="range" id="opacity" min="0" max="1" step="0.1" value="${
+        element.style.opacity || 1
+      }">
+    </div>
+
+    <div class="menu-section">
+      <label for="position">Position:</label>
+      <select id="position">
+        <option value="static" ${
+          element.style.position === "static" ? "selected" : ""
+        }>Static</option>
+        <option value="relative" ${
+          element.style.position === "relative" ? "selected" : ""
+        }>Relative</option>
+        <option value="absolute" ${
+          element.style.position === "absolute" ? "selected" : ""
+        }>Absolute</option>
+        <option value="fixed" ${
+          element.style.position === "fixed" ? "selected" : ""
+        }>Fixed</option>
+        <option value="sticky" ${
+          element.style.position === "sticky" ? "selected" : ""
+        }>Sticky</option>
+      </select>
+    </div>
+
+    <div id="position-options" class="menu-section" ${
+      element.style.position === "absolute" ||
+      element.style.position === "fixed"
+        ? ""
+        : 'style="display:none;"'
+    }>
+      <div class="menu-section">
+        <label for="top">Top (px):</label>
+        <input type="number" id="top" value="${
+          element.style.top ? parseInt(element.style.top, 10) : 0
+        }">
+      </div>
+      <div class="menu-section">
+        <label for="left">Left (px):</label>
+        <input type="number" id="left" value="${
+          element.style.left ? parseInt(element.style.left, 10) : 0
+        }">
+      </div>
+    </div>
+  `
+      );
+
+      // Event listener for background type change
+      document
+        .getElementById("background-type")
+        .addEventListener("change", (e) => {
+          const selectedType = e.target.value;
+          const solidColorSection = document.getElementById(
+            "solid-color-section"
+          );
+          const gradientSection = document.getElementById("gradient-section");
+          const linearGradientOptions = document.getElementById(
+            "linear-gradient-options"
+          );
+          const gradientPositionSection = document.getElementById(
+            "gradient-position-section"
+          );
+
+          if (selectedType === "solid") {
+            element.style.backgroundImage = "";
+            solidColorSection.style.display = "block";
+            gradientSection.style.display = "none";
+          } else {
+            solidColorSection.style.display = "none";
+            gradientSection.style.display = "block";
+
+            if (selectedType === "linear-gradient") {
+              linearGradientOptions.style.display = "block";
+              gradientPositionSection.style.display = "block";
+              element.style.backgroundImage = `linear-gradient(${
+                element.gradientAngle || 45
+              }deg, ${element.gradientColor1 || "#ff7e5f"} ${
+                element.gradientPosition1 || 0
+              }%, ${element.gradientColor2 || "#feb47b"} ${
+                element.gradientPosition2 || 100
+              }%)`;
+            } else {
+              linearGradientOptions.style.display = "none";
+              gradientPositionSection.style.display = "none";
+              element.style.backgroundImage = `radial-gradient(${
+                element.gradientColor1 || "#ff7e5f"
+              }, ${element.gradientColor2 || "#feb47b"})`;
+            }
+          }
+        });
+
+      // Event listener for solid background color
+      document
+        .getElementById("background-color")
+        .addEventListener("input", (e) => {
+          element.style.backgroundColor = e.target.value;
+        });
+
+      // Event listeners for gradient color and position changes
+      document
+        .getElementById("gradient-color1")
+        .addEventListener("input", (e) => {
+          element.gradientColor1 = e.target.value;
+          updateGradient();
+        });
+
+      document
+        .getElementById("gradient-color2")
+        .addEventListener("input", (e) => {
+          element.gradientColor2 = e.target.value;
+          updateGradient();
+        });
+
+      document
+        .getElementById("color1-position")
+        .addEventListener("input", (e) => {
+          element.gradientPosition1 = e.target.value;
+          updateGradient();
+        });
+
+      document
+        .getElementById("color2-position")
+        .addEventListener("input", (e) => {
+          element.gradientPosition2 = e.target.value;
+          updateGradient();
+        });
+
+      // Event listener for gradient angle change
+      document
+        .getElementById("gradient-angle")
+        .addEventListener("input", (e) => {
+          element.gradientAngle = e.target.value;
+          updateGradient();
+        });
+
+      // Function to update gradient background
+      function updateGradient() {
+        const gradientType = document.getElementById("background-type").value;
+        if (gradientType === "linear-gradient") {
+          element.style.backgroundImage = `linear-gradient(${
+            element.gradientAngle || 45
+          }deg, ${element.gradientColor1 || "#ff7e5f"} ${
+            element.gradientPosition1 || 0
+          }%, ${element.gradientColor2 || "#feb47b"} ${
+            element.gradientPosition2 || 100
+          }%)`;
+        } else if (gradientType === "radial-gradient") {
+          element.style.backgroundImage = `radial-gradient(${
+            element.gradientColor1 || "#ff7e5f"
+          }, ${element.gradientColor2 || "#feb47b"})`;
+        }
+      }
+
+      // Event listeners for width and height changes
+      document.getElementById("width").addEventListener("input", (e) => {
+        element.style.width = `${e.target.value}px`;
+      });
+
+      document.getElementById("height").addEventListener("input", (e) => {
+        element.style.height = `${e.target.value}px`;
+      });
+
+      // Event listeners for opacity and position changes
+      document.getElementById("opacity").addEventListener("input", (e) => {
+        element.style.opacity = e.target.value;
+      });
+
+      document.getElementById("position").addEventListener("change", (e) => {
+        element.style.position = e.target.value;
+
+        const positionOptions = document.getElementById("position-options");
+        if (e.target.value === "absolute" || e.target.value === "fixed") {
+          positionOptions.style.display = "block";
+        } else {
+          positionOptions.style.display = "none";
+        }
+      });
+
+      document.getElementById("top").addEventListener("input", (e) => {
+        element.style.top = `${e.target.value}px`;
+      });
+
+      document.getElementById("left").addEventListener("input", (e) => {
+        element.style.left = `${e.target.value}px`;
+      });
+    }
+
+    if (element.classList.contains("checkbox")) {
+      customizationMenu.insertAdjacentHTML(
+        "beforeend",
+        `
+      <div class="menu-section">
+        <label for="checked">Checked:</label>
+        <input type="checkbox" id="checked" ${element.checked ? "checked" : ""}>
+      </div>
+      
+      <div class="menu-section">
+        <label for="disabled">Disabled:</label>
+        <input type="checkbox" id="disabled" ${
+          element.disabled ? "checked" : ""
+        }>
+      </div>
+    `
+      );
+
+      document.getElementById("checked").addEventListener("change", (e) => {
+        element.checked = e.target.checked;
+      });
+
+      document.getElementById("disabled").addEventListener("change", (e) => {
+        element.disabled = e.target.checked;
+      });
+    }
 
     if (element.classList.contains("video-element")) {
       customizationMenu.insertAdjacentHTML(
@@ -464,261 +840,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.getElementById("autoplay").addEventListener("change", (e) => {
         element.autoplay = e.target.checked;
-      });
-    }
-
-    if (element.classList.contains("colored-square-element")) {
-      customizationMenu.insertAdjacentHTML(
-        "beforeend",
-        `
-        <div class="menu-section">
-          <label for="background-type">Background Type:</label>
-          <select id="background-type">
-            <option value="solid" ${
-              element.style.backgroundImage ? "" : "selected"
-            }>Solid</option>
-            <option value="linear-gradient" ${
-              element.style.backgroundImage.includes("linear-gradient")
-                ? "selected"
-                : ""
-            }>Linear Gradient</option>
-            <option value="radial-gradient" ${
-              element.style.backgroundImage.includes("radial-gradient")
-                ? "selected"
-                : ""
-            }>Radial Gradient</option>
-          </select>
-        </div>
-    
-        <div id="solid-color-section" class="menu-section" ${
-          element.style.backgroundImage ? 'style="display:none;"' : ""
-        }>
-          <label for="background-color">Background Color:</label>
-          <input type="color" id="background-color" value="${
-            element.style.backgroundColor || "#ff7e5f"
-          }">
-        </div>
-    
-        <div id="gradient-section" class="menu-section" ${
-          element.style.backgroundImage ? "" : 'style="display:none;"'
-        }>
-          <div class="menu-section">
-            <label for="gradient-color1">Gradient Color 1:</label>
-            <input type="color" id="gradient-color1" value="${
-              element.gradientColor1 || "#ff7e5f"
-            }">
-          </div>
-          <div class="menu-section">
-            <label for="gradient-color2">Gradient Color 2:</label>
-            <input type="color" id="gradient-color2" value="${
-              element.gradientColor2 || "#feb47b"
-            }">
-          </div>
-    
-          <div id="linear-gradient-options" class="menu-section" ${
-            element.style.backgroundImage.includes("linear-gradient")
-              ? ""
-              : 'style="display:none;"'
-          }>
-            <label for="gradient-angle">Gradient Angle (degrees):</label>
-            <input type="number" id="gradient-angle" value="${
-              element.gradientAngle || 45
-            }">
-          </div>
-    
-          <div id="gradient-position-section" class="menu-section" ${
-            element.style.backgroundImage.includes("linear-gradient") &&
-            !element.style.backgroundImage.includes("radial-gradient")
-              ? ""
-              : 'style="display:none;"'
-          }>
-            <div class="menu-section">
-              <label for="color1-position">Color 1 Position (%):</label>
-              <input type="number" id="color1-position" value="${
-                element.gradientPosition1 || 0
-              }">
-            </div>
-            <div class="menu-section">
-              <label for="color2-position">Color 2 Position (%):</label>
-              <input type="number" id="color2-position" value="${
-                element.gradientPosition2 || 100
-              }">
-            </div>
-          </div>
-        </div>
-    
-        <div class="menu-section">
-          <label for="width">Width (px):</label>
-          <input type="number" id="width" value="${
-            parseInt(element.style.width, 10) || 100
-          }">
-        </div>
-    
-        <div class="menu-section">
-          <label for="height">Height (px):</label>
-          <input type="number" id="height" value="${
-            parseInt(element.style.height, 10) || 100
-          }">
-        </div>
-    
-        <div class="menu-section">
-          <label for="opacity">Opacity:</label>
-          <input type="range" id="opacity" min="0" max="1" step="0.1" value="${
-            element.style.opacity || 1
-          }">
-        </div>
-    
-        <div class="menu-section">
-          <label for="position">Position:</label>
-          <select id="position">
-            <option value="static" ${
-              element.style.position === "static" ? "selected" : ""
-            }>Static</option>
-            <option value="relative" ${
-              element.style.position === "relative" ? "selected" : ""
-            }>Relative</option>
-            <option value="absolute" ${
-              element.style.position === "absolute" ? "selected" : ""
-            }>Absolute</option>
-            <option value="fixed" ${
-              element.style.position === "fixed" ? "selected" : ""
-            }>Fixed</option>
-            <option value="sticky" ${
-              element.style.position === "sticky" ? "selected" : ""
-            }>Sticky</option>
-          </select>
-        </div>
-    
-        <div id="position-options" class="menu-section" ${
-          element.style.position === "absolute" || element.style.position === "fixed"
-            ? ""
-            : 'style="display:none;"'
-        }>
-          <div class="menu-section">
-            <label for="top">Top (px):</label>
-            <input type="number" id="top" value="${element.style.top ? parseInt(element.style.top, 10) : 0}">
-          </div>
-          <div class="menu-section">
-            <label for="left">Left (px):</label>
-            <input type="number" id="left" value="${element.style.left ? parseInt(element.style.left, 10) : 0}">
-          </div>
-        </div>
-      `
-      );
-    
-      // Event listener for background type change
-      document.getElementById("background-type").addEventListener("change", (e) => {
-        const selectedType = e.target.value;
-        const solidColorSection = document.getElementById("solid-color-section");
-        const gradientSection = document.getElementById("gradient-section");
-        const linearGradientOptions = document.getElementById("linear-gradient-options");
-        const gradientPositionSection = document.getElementById("gradient-position-section");
-    
-        if (selectedType === "solid") {
-          element.style.backgroundImage = "";
-          solidColorSection.style.display = "block";
-          gradientSection.style.display = "none";
-        } else {
-          solidColorSection.style.display = "none";
-          gradientSection.style.display = "block";
-    
-          if (selectedType === "linear-gradient") {
-            linearGradientOptions.style.display = "block";
-            gradientPositionSection.style.display = "block";
-            element.style.backgroundImage = `linear-gradient(${element.gradientAngle || 45}deg, ${
-              element.gradientColor1 || "#ff7e5f"
-            } ${element.gradientPosition1 || 0}%, ${
-              element.gradientColor2 || "#feb47b"
-            } ${element.gradientPosition2 || 100}%)`;
-          } else {
-            linearGradientOptions.style.display = "none";
-            gradientPositionSection.style.display = "none";
-            element.style.backgroundImage = `radial-gradient(${element.gradientColor1 || "#ff7e5f"}, ${
-              element.gradientColor2 || "#feb47b"
-            })`;
-          }
-        }
-      });
-    
-      // Event listener for solid background color
-      document.getElementById("background-color").addEventListener("input", (e) => {
-        element.style.backgroundColor = e.target.value;
-      });
-    
-      // Event listeners for gradient color and position changes
-      document.getElementById("gradient-color1").addEventListener("input", (e) => {
-        element.gradientColor1 = e.target.value;
-        updateGradient();
-      });
-    
-      document.getElementById("gradient-color2").addEventListener("input", (e) => {
-        element.gradientColor2 = e.target.value;
-        updateGradient();
-      });
-    
-      document.getElementById("color1-position").addEventListener("input", (e) => {
-        element.gradientPosition1 = e.target.value;
-        updateGradient();
-      });
-    
-      document.getElementById("color2-position").addEventListener("input", (e) => {
-        element.gradientPosition2 = e.target.value;
-        updateGradient();
-      });
-    
-      // Event listener for gradient angle change
-      document.getElementById("gradient-angle").addEventListener("input", (e) => {
-        element.gradientAngle = e.target.value;
-        updateGradient();
-      });
-    
-      // Function to update gradient background
-      function updateGradient() {
-        const gradientType = document.getElementById("background-type").value;
-        if (gradientType === "linear-gradient") {
-          element.style.backgroundImage = `linear-gradient(${element.gradientAngle || 45}deg, ${
-            element.gradientColor1 || "#ff7e5f"
-          } ${element.gradientPosition1 || 0}%, ${
-            element.gradientColor2 || "#feb47b"
-          } ${element.gradientPosition2 || 100}%)`;
-        } else if (gradientType === "radial-gradient") {
-          element.style.backgroundImage = `radial-gradient(${element.gradientColor1 || "#ff7e5f"}, ${
-            element.gradientColor2 || "#feb47b"
-          })`;
-        }
-      }
-    
-      // Event listeners for width and height changes
-      document.getElementById("width").addEventListener("input", (e) => {
-        element.style.width = `${e.target.value}px`;
-      });
-    
-      document.getElementById("height").addEventListener("input", (e) => {
-        element.style.height = `${e.target.value}px`;
-      });
-    
-      // Event listeners for opacity and position changes
-      document.getElementById("opacity").addEventListener("input", (e) => {
-        element.style.opacity = e.target.value;
-      });
-    
-      document.getElementById("position").addEventListener("change", (e) => {
-        element.style.position = e.target.value;
-    
-        const positionOptions = document.getElementById("position-options");
-        if (e.target.value === "absolute" || e.target.value === "fixed") {
-          positionOptions.style.display = "block";
-        } else {
-          positionOptions.style.display = "none";
-        }
-      });
-    
-      document.getElementById("top").addEventListener("input", (e) => {
-        element.style.top = `${e.target.value}px`;
-      });
-    
-      document.getElementById("left").addEventListener("input", (e) => {
-        element.style.left = `${e.target.value}px`;
       });
     }
 
@@ -926,337 +1047,481 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    if (element.classList.contains("slider-element")) {
+    if (element.classList.contains("text-element")) {
       customizationMenu.insertAdjacentHTML(
         "beforeend",
         `
       <div class="menu-section">
-        <label for="minValue">Minimum Value:</label>
-        <input type="number" id="minValue" value="${
-          parseInt(element.min, 10) || 0
+        <label for="zIndex">Z-Index:</label>
+        <input type="number" id="zIndex" value="${element.style.zIndex || 0}">
+      </div>
+
+      <div class="menu-section">
+        <label for="textContent">Text Content:</label>
+        <textarea id="textContent">${element.innerText}</textarea>
+      </div>
+
+      <div class="menu-section">
+        <label for="fontSize">Font Size (px):</label>
+        <input type="number" id="fontSize" value="${parseInt(
+          styles.fontSize,
+          10
+        )}">
+      </div>
+
+      <div class="menu-section">
+        <label for="fontColor">Font Color:</label>
+        <input type="color" id="fontColor" value="${styles.color}">
+      </div>
+
+      <div class="menu-section">
+        <label for="fontFamily">Font Family:</label>
+        <input type="text" id="fontFamily" value="${styles.fontFamily}">
+      </div>
+
+      <div class="menu-section">
+        <label for="textAlign">Text Align:</label>
+        <select id="textAlign">
+          <option value="left" ${
+            styles.textAlign === "left" ? "selected" : ""
+          }>Left</option>
+          <option value="center" ${
+            styles.textAlign === "center" ? "selected" : ""
+          }>Center</option>
+          <option value="right" ${
+            styles.textAlign === "right" ? "selected" : ""
+          }>Right</option>
+        </select>
+      </div>
+
+      <div class="menu-section">
+        <label for="padding">Padding (px):</label>
+        <input type="number" id="padding" value="${parseInt(
+          styles.padding,
+          10
+        )}">
+      </div>
+
+      <div class="menu-section">
+        <label for="margin">Margin (px):</label>
+        <input type="number" id="margin" value="${parseInt(styles.margin, 10)}">
+      </div>
+
+      <div class="menu-section">
+        <label for="fontWeight">Font Weight:</label>
+        <select id="fontWeight">
+          <option value="normal" ${
+            styles.fontWeight === "normal" ? "selected" : ""
+          }>Normal</option>
+          <option value="bold" ${
+            styles.fontWeight === "bold" ? "selected" : ""
+          }>Bold</option>
+          <option value="bolder" ${
+            styles.fontWeight === "bolder" ? "selected" : ""
+          }>Bolder</option>
+          <option value="lighter" ${
+            styles.fontWeight === "lighter" ? "selected" : ""
+          }>Lighter</option>
+        </select>
+      </div>
+
+      <div class="menu-section">
+        <label for="fontStyle">Font Style:</label>
+        <select id="fontStyle">
+          <option value="normal" ${
+            styles.fontStyle === "normal" ? "selected" : ""
+          }>Normal</option>
+          <option value="italic" ${
+            styles.fontStyle === "italic" ? "selected" : ""
+          }>Italic</option>
+        </select>
+      </div>
+
+      <div class="menu-section">
+        <label for="textDecoration">Text Decoration:</label>
+        <select id="textDecoration">
+          <option value="none" ${
+            styles.textDecoration === "none" ? "selected" : ""
+          }>None</option>
+          <option value="underline" ${
+            styles.textDecoration === "underline" ? "selected" : ""
+          }>Underline</option>
+          <option value="line-through" ${
+            styles.textDecoration === "line-through" ? "selected" : ""
+          }>Line-through</option>
+        </select>
+      </div>
+
+      <div class="menu-section">
+        <label for="lineHeight">Line Height (px):</label>
+        <input type="number" id="lineHeight" value="${parseInt(
+          styles.lineHeight,
+          10
+        )}">
+      </div>
+
+      <div class="menu-section">
+        <label for="letterSpacing">Letter Spacing (px):</label>
+        <input type="number" id="letterSpacing" value="${parseInt(
+          styles.letterSpacing,
+          10
+        )}">
+      </div>
+
+      <div class="menu-section">
+        <label for="textTransform">Text Transform:</label>
+        <select id="textTransform">
+          <option value="none" ${
+            styles.textTransform === "none" ? "selected" : ""
+          }>None</option>
+          <option value="uppercase" ${
+            styles.textTransform === "uppercase" ? "selected" : ""
+          }>Uppercase</option>
+          <option value="lowercase" ${
+            styles.textTransform === "lowercase" ? "selected" : ""
+          }>Lowercase</option>
+          <option value="capitalize" ${
+            styles.textTransform === "capitalize" ? "selected" : ""
+          }>Capitalize</option>
+        </select>
+      </div>
+
+      <div class="menu-section">
+        <label for="textShadow">Text Shadow:</label>
+        <input type="text" id="textShadow" value="${
+          styles.textShadow || "none"
         }">
       </div>
-      
+
       <div class="menu-section">
-        <label for="maxValue">Maximum Value:</label>
-        <input type="number" id="maxValue" value="${
-          parseInt(element.max, 10) || 100
-        }">
-      </div>
-      
-      <div class="menu-section">
-        <label for="step">Step Size:</label>
-        <input type="number" id="step" value="${
-          parseInt(element.step, 10) || 1
-        }">
-      </div>
-      
-      <div class="menu-section">
-        <label for="value">Current Value:</label>
-        <input type="number" id="value" value="${element.value || 50}">
-      </div>
-      
-      <div class="menu-section">
-        <label for="orientation">Orientation:</label>
-        <select id="orientation">
-          <option value="horizontal" ${
-            element.orientation === "horizontal" ? "selected" : ""
-          }>Horizontal</option>
-          <option value="vertical" ${
-            element.orientation === "vertical" ? "selected" : ""
-          }>Vertical</option>
+        <label for="textOverflow">Text Overflow:</label>
+        <select id="textOverflow">
+          <option value="clip" ${
+            styles.textOverflow === "clip" ? "selected" : ""
+          }>Clip</option>
+          <option value="ellipsis" ${
+            styles.textOverflow === "ellipsis" ? "selected" : ""
+          }>Ellipsis</option>
         </select>
       </div>
     `
       );
 
-      document.getElementById("minValue").addEventListener("input", (e) => {
-        element.min = e.target.value;
-      });
-
-      document.getElementById("maxValue").addEventListener("input", (e) => {
-        element.max = e.target.value;
-      });
-
-      document.getElementById("step").addEventListener("input", (e) => {
-        element.step = e.target.value;
-      });
-
-      document.getElementById("value").addEventListener("input", (e) => {
-        element.value = e.target.value;
-      });
-
-      document.getElementById("orientation").addEventListener("change", (e) => {
-        element.orientation = e.target.value;
-      });
-    }
-
-    if (element.classList.contains("checkbox-element")) {
-      customizationMenu.insertAdjacentHTML(
-        "beforeend",
-        `
-      <div class="menu-section">
-        <label for="checked">Checked:</label>
-        <input type="checkbox" id="checked" ${element.checked ? "checked" : ""}>
-      </div>
-      
-      <div class="menu-section">
-        <label for="disabled">Disabled:</label>
-        <input type="checkbox" id="disabled" ${
-          element.disabled ? "checked" : ""
-        }>
-      </div>
-    `
-      );
-
-      document.getElementById("checked").addEventListener("change", (e) => {
-        element.checked = e.target.checked;
-      });
-
-      document.getElementById("disabled").addEventListener("change", (e) => {
-        element.disabled = e.target.checked;
-      });
-    }
-
-    if (element.classList.contains("text-element")) {
-      customizationMenu.insertAdjacentHTML(
-        "beforeend",
-        `
-          <div class="menu-section">
-            <label for="zIndex">Z-Index:</label>
-            <input type="number" id="zIndex" value="${element.style.zIndex || 0}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="textContent">Text Content:</label>
-            <textarea id="textContent">${element.innerText}</textarea>
-          </div>
-    
-          <div class="menu-section">
-            <label for="fontSize">Font Size (px):</label>
-            <input type="number" id="fontSize" value="${parseInt(styles.fontSize, 10)}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="fontColor">Font Color:</label>
-            <input type="color" id="fontColor" value="${styles.color}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="fontFamily">Font Family:</label>
-            <input type="text" id="fontFamily" value="${styles.fontFamily}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="textAlign">Text Align:</label>
-            <select id="textAlign">
-              <option value="left" ${styles.textAlign === "left" ? "selected" : ""}>Left</option>
-              <option value="center" ${styles.textAlign === "center" ? "selected" : ""}>Center</option>
-              <option value="right" ${styles.textAlign === "right" ? "selected" : ""}>Right</option>
-            </select>
-          </div>
-    
-          <div class="menu-section">
-            <label for="padding">Padding (px):</label>
-            <input type="number" id="padding" value="${parseInt(styles.padding, 10)}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="margin">Margin (px):</label>
-            <input type="number" id="margin" value="${parseInt(styles.margin, 10)}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="fontWeight">Font Weight:</label>
-            <select id="fontWeight">
-              <option value="normal" ${styles.fontWeight === "normal" ? "selected" : ""}>Normal</option>
-              <option value="bold" ${styles.fontWeight === "bold" ? "selected" : ""}>Bold</option>
-              <option value="bolder" ${styles.fontWeight === "bolder" ? "selected" : ""}>Bolder</option>
-              <option value="lighter" ${styles.fontWeight === "lighter" ? "selected" : ""}>Lighter</option>
-            </select>
-          </div>
-    
-          <div class="menu-section">
-            <label for="fontStyle">Font Style:</label>
-            <select id="fontStyle">
-              <option value="normal" ${styles.fontStyle === "normal" ? "selected" : ""}>Normal</option>
-              <option value="italic" ${styles.fontStyle === "italic" ? "selected" : ""}>Italic</option>
-            </select>
-          </div>
-    
-          <div class="menu-section">
-            <label for="textDecoration">Text Decoration:</label>
-            <select id="textDecoration">
-              <option value="none" ${styles.textDecoration === "none" ? "selected" : ""}>None</option>
-              <option value="underline" ${styles.textDecoration === "underline" ? "selected" : ""}>Underline</option>
-              <option value="line-through" ${styles.textDecoration === "line-through" ? "selected" : ""}>Line-through</option>
-            </select>
-          </div>
-    
-          <div class="menu-section">
-            <label for="lineHeight">Line Height (px):</label>
-            <input type="number" id="lineHeight" value="${parseInt(styles.lineHeight, 10)}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="letterSpacing">Letter Spacing (px):</label>
-            <input type="number" id="letterSpacing" value="${parseInt(styles.letterSpacing, 10)}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="textTransform">Text Transform:</label>
-            <select id="textTransform">
-              <option value="none" ${styles.textTransform === "none" ? "selected" : ""}>None</option>
-              <option value="uppercase" ${styles.textTransform === "uppercase" ? "selected" : ""}>Uppercase</option>
-              <option value="lowercase" ${styles.textTransform === "lowercase" ? "selected" : ""}>Lowercase</option>
-              <option value="capitalize" ${styles.textTransform === "capitalize" ? "selected" : ""}>Capitalize</option>
-            </select>
-          </div>
-    
-          <div class="menu-section">
-            <label for="textShadow">Text Shadow:</label>
-            <input type="text" id="textShadow" value="${styles.textShadow || 'none'}">
-          </div>
-    
-          <div class="menu-section">
-            <label for="textOverflow">Text Overflow:</label>
-            <select id="textOverflow">
-              <option value="clip" ${styles.textOverflow === "clip" ? "selected" : ""}>Clip</option>
-              <option value="ellipsis" ${styles.textOverflow === "ellipsis" ? "selected" : ""}>Ellipsis</option>
-            </select>
-          </div>
-        `
-      );
-    
       document.getElementById("zIndex").addEventListener("input", (e) => {
         element.style.zIndex = e.target.value;
       });
-    
+
       document.getElementById("textContent").addEventListener("input", (e) => {
         element.innerText = e.target.value;
       });
-    
+
       document.getElementById("fontSize").addEventListener("input", (e) => {
         element.style.fontSize = `${e.target.value}px`;
       });
-    
+
       document.getElementById("fontColor").addEventListener("input", (e) => {
         element.style.color = e.target.value;
       });
-    
+
       document.getElementById("fontFamily").addEventListener("input", (e) => {
         element.style.fontFamily = e.target.value;
       });
-    
+
       document.getElementById("textAlign").addEventListener("change", (e) => {
         element.style.textAlign = e.target.value;
       });
-    
+
       document.getElementById("padding").addEventListener("input", (e) => {
         element.style.padding = `${e.target.value}px`;
       });
-    
+
       document.getElementById("margin").addEventListener("input", (e) => {
         element.style.margin = `${e.target.value}px`;
       });
-    
+
       document.getElementById("fontWeight").addEventListener("change", (e) => {
         element.style.fontWeight = e.target.value;
       });
-    
+
       document.getElementById("fontStyle").addEventListener("change", (e) => {
         element.style.fontStyle = e.target.value;
       });
-    
-      document.getElementById("textDecoration").addEventListener("change", (e) => {
-        element.style.textDecoration = e.target.value;
-      });
-    
+
+      document
+        .getElementById("textDecoration")
+        .addEventListener("change", (e) => {
+          element.style.textDecoration = e.target.value;
+        });
+
       document.getElementById("lineHeight").addEventListener("input", (e) => {
         element.style.lineHeight = `${e.target.value}px`;
       });
-    
-      document.getElementById("letterSpacing").addEventListener("input", (e) => {
-        element.style.letterSpacing = `${e.target.value}px`;
-      });
-    
-      document.getElementById("textTransform").addEventListener("change", (e) => {
-        element.style.textTransform = e.target.value;
-      });
-    
+
+      document
+        .getElementById("letterSpacing")
+        .addEventListener("input", (e) => {
+          element.style.letterSpacing = `${e.target.value}px`;
+        });
+
+      document
+        .getElementById("textTransform")
+        .addEventListener("change", (e) => {
+          element.style.textTransform = e.target.value;
+        });
+
       document.getElementById("textShadow").addEventListener("input", (e) => {
         element.style.textShadow = e.target.value;
       });
-    
-      document.getElementById("textOverflow").addEventListener("change", (e) => {
-        element.style.textOverflow = e.target.value;
-      });
+
+      document
+        .getElementById("textOverflow")
+        .addEventListener("change", (e) => {
+          element.style.textOverflow = e.target.value;
+        });
     }
 
     if (element.classList.contains("button-element")) {
       customizationMenu.insertAdjacentHTML(
         "beforeend",
         `
-                        <div class="menu-section">
-    <label for="zIndex">Z-Index:</label>
-    <input type="number" id="zIndex" value="${element.style.zIndex || 0}">
-</div>
-                <div class="menu-section">
-                    <label for="buttonText">Button Text:</label>
-                    <input type="text" id="buttonText" value="${
-                      element.innerText
-                    }">
-                </div>
-                <div class="menu-section">
-                    <label for="buttonColor">Button Background Color:</label>
-                    <input type="color" id="buttonColor" value="${
-                      styles.backgroundColor
-                    }">
-                </div>
-                <div class="menu-section">
-                    <label for="buttonTextColor">Button Text Color:</label>
-                    <input type="color" id="buttonTextColor" value="${
-                      styles.color
-                    }">
-                </div>
-                <div class="menu-section">
-                    <label for="buttonPadding">Padding (px):</label>
-                    <input type="number" id="buttonPadding" value="${parseInt(
-                      styles.padding,
-                      10
-                    )}">
-                </div>
-                <div class="menu-section">
-                    <label for="buttonMargin">Margin (px):</label>
-                    <input type="number" id="buttonMargin" value="${parseInt(
-                      styles.margin,
-                      10
-                    )}">
-                </div>
-            `
+      <div class="menu-section">
+        <label for="zIndex">Z-Index:</label>
+        <input type="number" id="zIndex" value="${element.style.zIndex || 0}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonText">Button Text:</label>
+        <input type="text" id="buttonText" value="${element.innerText}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonColor">Button Background Color:</label>
+        <input type="color" id="buttonColor" value="${styles.backgroundColor}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonTextColor">Button Text Color:</label>
+        <input type="color" id="buttonTextColor" value="${styles.color}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonPadding">Padding (px):</label>
+        <input type="number" id="buttonPadding" value="${parseInt(
+          styles.padding,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonMargin">Margin (px):</label>
+        <input type="number" id="buttonMargin" value="${parseInt(
+          styles.margin,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonClickAction">Click Action:</label>
+        <select id="buttonClickAction">
+          <option value="none" selected>None</option>
+          <option value="alert">Show Alert</option>
+          <option value="redirect">Redirect to Link</option>
+          <option value="showModal">Show Modal</option>
+          <option value="logMessage">Log Message</option>
+        </select>
+      </div>
+      <div id="actionSettings" class="menu-section" style="display:none;">
+        <div id="modalSettings" style="display:none;">
+          <label for="modalText">Modal Text:</label>
+          <textarea id="modalText"></textarea>
+          <label for="modalBgColor">Modal Background Color:</label>
+          <input type="color" id="modalBgColor">
+          <label for="modalTextColor">Modal Text Color:</label>
+          <input type="color" id="modalTextColor">
+        </div>
+        <div id="targetElementSection" style="display:none;">
+          <label for="targetElement">Target Element:</label>
+          <button id="selectTargetBtn">Select Target Element</button>
+          <input type="text" id="targetElement" readonly>
+        </div>
+      </div>
+    `
       );
+
+      const actionTypeSelect = document.getElementById("buttonClickAction");
+      const actionSettingsDiv = document.getElementById("actionSettings");
+      const targetElementInput = document.getElementById("targetElement");
+      const targetElementBtn = document.getElementById("selectTargetBtn");
+
+      // Function to update the action options based on selected action type
+      function updateActionOptions() {
+        const actionType = actionTypeSelect.value;
+        document.getElementById("modalSettings").style.display = "none";
+        document.getElementById("targetElementSection").style.display = "none";
+
+        switch (actionType) {
+          case "showModal":
+            document.getElementById("modalSettings").style.display = "block";
+            actionSettingsDiv.style.display = "block";
+            break;
+
+          case "alert":
+          case "redirect":
+          case "logMessage":
+            actionSettingsDiv.style.display = "none";
+            break;
+
+          default:
+            actionSettingsDiv.style.display = "none";
+            break;
+        }
+      }
+
+      function handleButtonClick() {
+        const actionType = actionTypeSelect.value;
+        const targetElementId = targetElementInput.value;
+        const targetElement = document.getElementById(targetElementId);
+        const customJsCode = element.getAttribute("data-custom-js");
+
+        switch (actionType) {
+          case "alert":
+            alert("Button Clicked!");
+            break;
+
+          case "redirect":
+            const link = prompt("Enter URL:");
+            if (link) window.location.href = link;
+            break;
+
+          case "showModal":
+            const modalText = document.getElementById("modalText").value;
+            const modalBgColor = document.getElementById("modalBgColor").value;
+            const modalTextColor = document.getElementById("modalTextColor")
+              .value;
+
+            const modal = document.createElement("div");
+            modal.style.position = "fixed";
+            modal.style.top = "50%";
+            modal.style.left = "50%";
+            modal.style.transform = "translate(-50%, -50%)";
+            modal.style.padding = "20px";
+            modal.style.backgroundColor = modalBgColor || "#fff";
+            modal.style.color = modalTextColor || "#000";
+            modal.style.border = "1px solid #ccc";
+            modal.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)";
+            modal.innerHTML = `<p>${
+              modalText || "This is a modal popup!"
+            }</p><button id="closeModal">Close</button>`;
+            document.body.appendChild(modal);
+            document
+              .getElementById("closeModal")
+              .addEventListener("click", () => {
+                document.body.removeChild(modal);
+              });
+            break;
+
+          case "logMessage":
+            const message = prompt("Enter message to log:");
+            if (message) console.log(message);
+            break;
+
+          case "none":
+          default:
+            if (customJsCode) {
+              // Evaluate and execute the custom JavaScript code stored in data-custom-js
+              try {
+                new Function(customJsCode).call(element);
+              } catch (error) {
+                console.error("Error executing custom JavaScript:", error);
+              }
+            }
+            break;
+        }
+      }
+
+      // Event listeners
       document.getElementById("zIndex").addEventListener("input", (e) => {
         element.style.zIndex = e.target.value;
       });
+
       document.getElementById("buttonText").addEventListener("input", (e) => {
         element.innerText = e.target.value;
       });
+
       document.getElementById("buttonColor").addEventListener("input", (e) => {
         element.style.backgroundColor = e.target.value;
       });
+
       document
         .getElementById("buttonTextColor")
         .addEventListener("input", (e) => {
           element.style.color = e.target.value;
         });
+
       document
         .getElementById("buttonPadding")
         .addEventListener("input", (e) => {
           element.style.padding = `${e.target.value}px`;
         });
+
       document.getElementById("buttonMargin").addEventListener("input", (e) => {
         element.style.margin = `${e.target.value}px`;
       });
+
+      actionTypeSelect.addEventListener("change", updateActionOptions);
+
+      // Add event listener for selecting target element
+      targetElementBtn.addEventListener("click", () => {
+        // Code to enable selecting another element as target
+        document.addEventListener("click", function selectTarget(event) {
+          if (event.target !== element && event.target !== targetElementBtn) {
+            targetElementInput.value = event.target.id;
+            document.removeEventListener("click", selectTarget);
+          }
+        });
+      });
+
+      // Initialize action settings
+      updateActionOptions();
+
+      // Event listeners
+      document.getElementById("zIndex").addEventListener("input", (e) => {
+        element.style.zIndex = e.target.value;
+      });
+
+      document.getElementById("buttonText").addEventListener("input", (e) => {
+        element.innerText = e.target.value;
+      });
+
+      document.getElementById("buttonColor").addEventListener("input", (e) => {
+        element.style.backgroundColor = e.target.value;
+      });
+
+      document
+        .getElementById("buttonTextColor")
+        .addEventListener("input", (e) => {
+          element.style.color = e.target.value;
+        });
+
+      document
+        .getElementById("buttonPadding")
+        .addEventListener("input", (e) => {
+          element.style.padding = `${e.target.value}px`;
+        });
+
+      document.getElementById("buttonMargin").addEventListener("input", (e) => {
+        element.style.margin = `${e.target.value}px`;
+      });
+
+      actionTypeSelect.addEventListener("change", updateActionOptions);
+
+      // Add event listener for selecting target element
+      targetElementBtn.addEventListener("click", () => {
+        // Code to enable selecting another element as target
+        document.addEventListener("click", function selectTarget(event) {
+          if (event.target !== element && event.target !== targetElementBtn) {
+            targetElementInput.value = event.target.id;
+            document.removeEventListener("click", selectTarget);
+          }
+        });
+      });
+
+      // Initialize action settings
+      updateActionOptions();
     }
 
     if (element.classList.contains("image-element")) {
@@ -1357,46 +1622,57 @@ document.addEventListener("DOMContentLoaded", () => {
       customizationMenu.insertAdjacentHTML(
         "beforeend",
         `
-                                <div class="menu-section">
-                    <label for="textContent">Text Content:</label>
-                    <textarea id="textContent">${element.innerText}</textarea>
-                </div>
-                <div class="menu-section">
-                    <label for="navBgColor">Background Color:</label>
-                    <input type="color" id="navBgColor" value="${
-                      styles.backgroundColor
-                    }">
-                </div>
-                <div class="menu-section">
-                    <label for="navWidth">Width (px):</label>
-                    <input type="number" id="navWidth" value="${parseInt(
-                      styles.width,
-                      10
-                    )}">
-                </div>
-                <div class="menu-section">
-                    <label for="navHeight">Height (px):</label>
-                    <input type="number" id="navHeight" value="${parseInt(
-                      styles.height,
-                      10
-                    )}">
-                </div>
-                <div class="menu-section">
-                    <label for="navPadding">Padding (px):</label>
-                    <input type="number" id="navPadding" value="${parseInt(
-                      styles.padding,
-                      10
-                    )}">
-                </div>
-                <div class="menu-section">
-                    <label for="navMargin">Margin (px):</label>
-                    <input type="number" id="navMargin" value="${parseInt(
-                      styles.margin,
-                      10
-                    )}">
-                </div>
-            `
+      <div class="menu-section">
+        <label for="textContent">Text Content:</label>
+        <textarea id="textContent">${element.innerText}</textarea>
+      </div>
+      <div class="menu-section">
+        <label for="navBgColor">Background Color:</label>
+        <input type="color" id="navBgColor" value="${styles.backgroundColor}">
+      </div>
+      <div class="menu-section">
+        <label for="navWidth">Width (px):</label>
+        <input type="number" id="navWidth" value="${parseInt(
+          styles.width,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="navHeight">Height (px):</label>
+        <input type="number" id="navHeight" value="${parseInt(
+          styles.height,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="navPadding">Padding (px):</label>
+        <input type="number" id="navPadding" value="${parseInt(
+          styles.padding,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="navMargin">Margin (px):</label>
+        <input type="number" id="navMargin" value="${parseInt(
+          styles.margin,
+          10
+        )}">
+      </div>
+      <div class="menu-section">
+        <label for="buttonBgColor">Button Background Color:</label>
+        <input type="color" id="buttonBgColor" value="#555">
+      </div>
+      <div class="menu-section">
+        <label for="buttonTextColor">Button Text Color:</label>
+        <input type="color" id="buttonTextColor" value="#fff">
+      </div>
+      <div class="menu-section">
+        <label for="buttonBorderRadius">Button Border Radius (px):</label>
+        <input type="number" id="buttonBorderRadius" value="3">
+      </div>
+    `
       );
+
       document.getElementById("navBgColor").addEventListener("input", (e) => {
         element.style.backgroundColor = e.target.value;
       });
@@ -1412,6 +1688,30 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("navMargin").addEventListener("input", (e) => {
         element.style.margin = `${e.target.value}px`;
       });
+
+      document.getElementById("buttonBgColor").addEventListener("input", (e) => {
+  const buttons = element.querySelectorAll(".nav-button-custom");
+buttons.forEach((button) => {
+  button.style.setProperty('background-color', e.target.value, 'important');
+});
+});
+      document
+        .getElementById("buttonTextColor")
+        .addEventListener("input", (e) => {
+          const buttons = element.querySelectorAll(".nav-button-custom");
+          buttons.forEach((button) => {
+            button.style.color = e.target.value;
+          });
+        });
+
+      document
+        .getElementById("buttonBorderRadius")
+        .addEventListener("input", (e) => {
+          const buttons = element.querySelectorAll(".nav-button-custom");
+          buttons.forEach((button) => {
+            button.style.borderRadius = `${e.target.value}px`;
+          });
+        });
     }
   }
 
@@ -1421,13 +1721,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     pages.forEach((page) => {
       const button = document.createElement("button");
-      button.className = "nav-button";
+      button.className = "nav-button-custom"; // Custom class for nav bar buttons
       button.innerText = page.name;
       button.dataset.targetPage = page.name;
       button.style.margin = "0 5px";
       button.style.padding = "5px 10px";
       button.style.cursor = "pointer";
-      button.style.backgroundColor = "#555";
+      button.style.backgroundColor = "#555"; // Default styles
       button.style.color = "#fff";
       button.style.border = "none";
       button.style.borderRadius = "3px";
@@ -1438,6 +1738,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navContainer.appendChild(button);
     });
   }
+
   function updateAllNavBars() {
     const navBars = canvas.querySelectorAll(".nav-bar");
     navBars.forEach((navBar) => {
@@ -1469,57 +1770,15 @@ document.addEventListener("DOMContentLoaded", () => {
     handles.forEach((handle) => (handle.style.display = "block"));
   }
 
-  function exportCode() {
-    const htmlContent = canvas.innerHTML.replace(
-      /<div class="resize-handle.*?<\/div>/g,
-      ""
-    );
-
-    const jsCode = `
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const pages = document.querySelectorAll('.page-element');
-        const navButtons = document.querySelectorAll('.nav-button');
-
-        function navigateToPage(pageName) {
-            pages.forEach(page => {
-                page.style.display = page.dataset.pageName === pageName ? 'block' : 'none';
-                Array.from(page.children).forEach(child => {
-                    child.style.display = page.style.display;
-                });
-            });
-        }
-
-        navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetPageName = button.dataset.targetPage;
-                navigateToPage(targetPageName);
-            });
-        });
-
-        // Show the first page by default
-        pages[0].style.display = 'block';
-    });
-    </script>
-    `;
-
-    const fullCode = htmlContent + jsCode;
-
-    const blob = new Blob([fullCode], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "glimmer.html";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
   applyChangesButton.addEventListener("click", () => {
     hideCustomizationMenu();
   });
 
+  function onDoubleClickOrKeyAction(e) {
+    onDoubleClickElement(e);
+  }
+
+  //ALL OF THE KEYBINDS
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       hideCustomizationMenu();
@@ -1536,9 +1795,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else if (currentElement && e.key === "f") {
       toggleFixedState(currentElement);
-    } if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault(); 
-        exportCode(); 
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+      e.preventDefault();
+      exportCode();
     }
   });
 
@@ -1547,10 +1807,34 @@ document.addEventListener("DOMContentLoaded", () => {
       onSingleClickElement(e);
     }
   });
+  let selectedElement = null;
+
+  function handleElementAction(element) {
+    if (element && element.classList.contains("draggable-element")) {
+      const doubleClickEvent = new MouseEvent("dblclick", {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      element.dispatchEvent(doubleClickEvent);
+    }
+  }
+  canvas.addEventListener("click", (e) => {
+    if (e.target.classList.contains("draggable-element")) {
+      selectedElement = e.target;
+      onSingleClickElement(e);
+    } else {
+      selectedElement = null;
+    }
+  });
 
   canvas.addEventListener("dblclick", (e) => {
-    if (e.target.classList.contains("draggable-element")) {
-      onDoubleClickElement(e);
+    handleElementAction(e.target);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "e") {
+      handleElementAction(selectedElement);
     }
   });
 

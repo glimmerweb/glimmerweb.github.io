@@ -11,7 +11,7 @@
     <style>
         * {
             margin: 0;
-            padding: 0;
+            padding: 0px 0px;
             box-sizing: border-box;
         }
 
@@ -83,7 +83,7 @@
             flex: 1;
             max-width: 800px;
             margin: 40px auto;
-            padding: 0 20px;
+            padding: 0px 35px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -211,12 +211,13 @@
 <body>
     <nav class="navbar">
         <div class="logo">
-            <a href="#home">Glimmer</a>
+            <a href="https://glimmerweb.github.io">Glimmer</a>
         </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#getting-started">Getting Started</a></li>
             <li><a href="#api">Elements</a></li>
+            <li><a href="#keybinds">Keybinds</a?</li>
             <li><a href="#faq">FAQ</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -239,27 +240,169 @@
 
         <section id="api">
             <h2>Elements</h2>
-            <p>Glimmer offers a robust API to help you build dynamic web applications.</p>
+          <p><b>Glimmer offers the robust Element System to help you build dynamic web applications.</b></p>
             <h3>Text</h3>
-            <p>placeholder</p>
+            <p>Within the Text element, you can customize:
+<ul>
+  <li>Z-Index</li>
+  <li>Text Content</li>
+  <li>Font Size</li>
+  <li>Font Color</li>
+  <li>Font Family</li>
+  <li>Text Alignment</li>
+  <li>Padding</li>
+  <li>Margin</li>
+  <li>Font Weight</li>
+  <li>Font Style</li>
+  <li>Line Height</li>
+  <li>Letter Spacing</li>
+  <li>Text Transform</li>
+  <li>Text Shadow</li>
+  <li>Text Overflow</li>
+  </ul>
+</p>
             <h3>Button</h3>
+<p>Within the Button element, you can customize:
+<ul>
+  <li>Z-Index</li>
+  <li>Button Text</li>
+  <li>Button Background Color</li>
+  <li>Button Text Color</li>
+  <li>Padding</li>
+  <li>Margin</li>
+  </ul>
+</p>
             <h3>Image</h3>
-            <h3>Form</h3>
+  <p>Within the Image element, you can customize:
+<ul>
+  <li>Z-Index</li>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Image Source URL</li>
+  </ul>
+</p>
             <h3>Video</h3>
-            <h3>Contact Form</h3>
-            <h3>Input Field</h3>
-            <h3>Heading</h3>
-            <h3>Paragraph</h3>
-            <h3>List</h3>
-            <h3>Table</h3>
-            <h3>Icon</h3>
+  <p>Within the Video element, you can customize:
+<ul>
+  <li>Source URL</li>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Controls</li>
+  <li>Poster Image</li>
+  <li>Preload</li>
+  <li>Autoplay</li>
+  </ul>
+</p>
+            <h3>Audio</h3>
+  <p>The Audio Element is currenly broken
+</p>
+            <h3>Input</h3>
+  <p>Within the Input element, you can customize:
+<ul>
+  <li>Type</li>
+  <li>Placeholder</li>
+  <li>Width</li>
+  <li>Height</li>
+  </ul>
+</p>
+            <h3>Dropdown</h3>
+  <p>Within the Dropdown element, you can customize:
+<ul>
+  <li>Options - See FAQ for more details</li>
+  <li>Width</li>
+  <li>Height</li>
+  </ul>
+</p>
+            <h3>Slider</h3>
+  <p>Within the Slider element, you can customize:
+<ul>
+  <li>Min Value</li>
+  <li>Max Value</li>
+  <li>Step Size</li>
+  <li>Current Value</li>
+  <li>Orientation (Broken)</li>
+  </ul>
+</p>
+            <h3>Checkbox</h3>
+<p>Within the Checkbox element, you can customize:
+<ul>
+  <li>Checked</li>
+  <li>Disabled</li>
+  </ul>
+</p>
+            <h3>Colored Square</h3>
+  <p>Within the Colored Square element, you can customize:
+<ul>
+  <li>Background Type</li>
+  <li>Background Color</li>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Opacity</li>
+  <li>Position</li>
+  <li>Top (Position)</li>
+  <li>Left (Position)</li>
+  </ul>
+</p>
+             <h3>Page</h3>
+<p>Pages are a little more complicated. To create a Page you must have a name. This is the name that shows up in the Nav Bar.<br> When you are placing Pages, make sure not to place them on top of each other.<br> Any element placed onto a Page, will be attached to that Page, meaning to move them, you must Fix the Page.
+<br>
+Within the Page element, you can customize:
+  <ul>
+  <li>Background Color</li>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Border</li>
+  <li>Page Name (View Only)</li>
+  </ul>
+</p>
+
+            <h3>Nav Bar</h3>
+<p>Nav Bars are the system used to navigate between Pages. To use a Nav Bar, simply insert it (onto the Canvas, not a Page), and it will Auto-populate with the Pages in the project.
+<br>
+Within the Nav Bar element, you can customize:
+  <ul>
+  <li>Background Color</li>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Border</li>
+  <li>Page Name (View Only)</li>
+  </ul>
+</p>
         </section>
+
+        <section id="keybinds">
+            <h2>Controls</h2>
+          <p>
+  <ul>
+  <li>Insert Element - [Drag and drop from sidebar]</li>
+  <li>Select Element - [Left Click on Element]</li>
+  <li>Move Selected Element - [Drag and drop from the Canvas]</li>
+  <li>Customize Selected Element - [Right Click twice on the Element, or press "e"]</li>
+  <li>Delete Selected Element - [Shift + Delete]</li>
+  <li>Resize Selected Element - [Drag by handles]</li>
+  <li>Fix Selected Element - [Press "f"] (press again to Unfix)</li>
+  <li>Export Code - [Cmd/Ctrl + S]</li>
+  <li>Exit Customization Menu - [Press the "Close" button or "esc"]</li>
+  <li></li>
+  <li></li>
+  </ul>
+
+</p>
+         </section>
 
         <section id="faq">
             <h2>Frequently Asked Questions</h2>
-            <p><strong>Q:</strong> How do I update Glimmer?<br>
-               <strong>A:</strong> Glimmer is auto-updated!</p>
+               <p><strong>Q:</strong> How do I update Glimmer?<br>
+               <strong>A:</strong> Glimmer is auto-updated</p>
+          
+               <p><strong>Q:</strong> How do I delete Elements?<br>
+               <strong>A:</strong> You can delete an Element by pressing Shift+Delete</p>
+               <p><strong>Q:</strong> How do I edit the content of a Dropdown?<br>
+               <strong>A:</strong> Enter the values (comma seperated), and then press Enter</p>
+               <p><strong>Q:</strong> How do I export my code?<br>
+               <strong>A:</strong> You can export your code by pressing Cmd/Ctrl+S</p>
         </section>
+
         <section id="contact" class="contact-form">
             <h2>Contact Us</h2>
             <form id="contact-form" action="https://hooks.zapier.com/hooks/catch/19421684/2d6vm4f/" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
@@ -292,6 +435,29 @@
                 submitted = false;
             }
         }
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const targetID = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetID);
+
+            if (targetElement) {
+                // Dynamically get the height of the header
+                const header = document.querySelector('header'); // Adjust selector to your header element
+                const headerHeight = header ? header.offsetHeight : 0;
+
+
+                const offsetPosition = (targetElement.offsetTop - headerHeight) - 80;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
     </script>
 </body>
 </html>
